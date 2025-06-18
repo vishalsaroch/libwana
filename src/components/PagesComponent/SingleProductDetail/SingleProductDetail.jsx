@@ -28,6 +28,8 @@ import LocationCardInProdDet from "./LocationCardInProdDet";
 import ReportAdCard from "./ReportAdCard";
 import OpenInAppDrawer from "./OpenInAppDrawer";
 import { useSearchParams } from "next/navigation";
+import { FloatingWhatsApp } from 'react-floating-whatsapp';
+
 
 
 const SingleProductDetail = ({ slug }) => {
@@ -365,6 +367,23 @@ const SingleProductDetail = ({ slug }) => {
                 <CustomLightBox lightboxOpen={viewerIsOpen} currentImages={images} currentImageIndex={currentImage} handleCloseLightbox={() => setViewerIsOpen(false)} setCurrentImage={setCurrentImage} />
                 {isReportModal && <ReportModal IsReportModalOpen={isReportModal} OnHide={() => setIsReportModal(false)} itemID={productData?.id} setProductData={setProductData} />}
                 <OpenInAppDrawer IsOpenInApp={IsOpenInApp} OnHide={() => setIsOpenInApp(false)} systemSettingsData={systemSettingsData} />
+                  <FloatingWhatsApp
+      phoneNumber="9191234XXXX"              // your WhatsApp number
+         accountName="AdelSupport"              // displayed name
+         avatar=""                              // optional avatar URL
+         statusMessage="Typically replies in a few minutes"
+         chatMessage="Hi there! 👋 How can we help with this product?"
+         allowClickAway={true}
+         notification
+         notificationSound
+         chatButtonStyle={{
+           backgroundColor: '#25D366',
+           width: '56px',
+           height: '56px',
+          borderRadius: '50%',
+          
+         }}
+                />
             </>
         )
     )
