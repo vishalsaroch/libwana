@@ -91,6 +91,13 @@ const ProductDetailCard = ({ productData, setProductData, systemSettingsData }) 
                     <FaRegCalendarCheck size={16} />
                     <span> {t('postedOn')}: {formattedDate} </span>
                 </div>
+
+                 {productData?.delivery_available !== undefined && (
+      <div className="delivery_info">
+        <strong>Delivery Available:</strong> {productData.delivery_available ? 'Yes' : 'No'}
+      </div>
+    )}
+      
             </div>
         </div>
     )
