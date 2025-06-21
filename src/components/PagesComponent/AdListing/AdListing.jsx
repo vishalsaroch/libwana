@@ -34,6 +34,7 @@ const AdListing = () => {
     price: '',
     phonenumber: '',
     link: '',
+    deliveryAvailable: false, // ✅ NEW FIELD
   })
   const [extraDetails, setExtraDetails] = useState({})
   const [uploadedImages, setUploadedImages] = useState([]);
@@ -396,20 +397,23 @@ const AdListing = () => {
     }
   };
 
-  const handleAdListingChange = (e) => {
-    const { name, value } = e.target;
+const handleAdListingChange = (e) => {
+  const { name, value, type, checked } = e.target;
 
-    setAdListingDetails((prevDetails) => {
-      const updatedDetails = {
-        ...prevDetails,
-        [name]: value,
-      };
-      if (name === 'title') {
-        updatedDetails.slug = generateSlug(value);
-      }
-      return updatedDetails;
-    });
-  };
+  setAdListingDetails((prevDetails) => {
+    const updatedDetails = {
+      ...prevDetails,
+      [name]: type === 'checkbox' ? checked : value,
+    };
+
+    if (name === 'title') {
+      updatedDetails.slug = generateSlug(value);
+    }
+
+    return updatedDetails;
+  });
+};
+
 
   const handleDetailsSubmit = () => {
 
@@ -564,6 +568,7 @@ const AdListing = () => {
       price: AdListingDetails.price,
       contact: AdListingDetails.phonenumber,
       video_link: AdListingDetails?.link,
+      delivery_available: AdListingDetails?.deliveryAvailable, // ✅ Add this
       custom_fields: transformedCustomFields,
       image: uploadedImages[0],
       gallery_images: OtherImages,
@@ -768,8 +773,6 @@ const AdListing = () => {
                 CustomFields.length !== 0 &&
                 <span className={`tab ${activeTab === 3 ? 'activeTab' : ''}${DisabledTab.extraDet ? 'PagArrowdisabled' : ''}`} onClick={() => handleTabClick(3)}>{t('extraDetails')}</span>
               }
-
-
               <span className={`tab ${activeTab === 4 ? 'activeTab' : ''}${DisabledTab.img ? 'PagArrowdisabled' : ''}`} onClick={() => handleTabClick(4)}>{t('images')}</span>
               <span className={`tab ${activeTab === 5 ? 'activeTab' : ''}${DisabledTab.loc ? 'PagArrowdisabled' : ''}`} onClick={() => handleTabClick(5)}>{t('location')}</span>
             </div>

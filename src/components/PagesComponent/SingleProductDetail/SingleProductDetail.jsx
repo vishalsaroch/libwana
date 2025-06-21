@@ -370,7 +370,7 @@ const SingleProductDetail = ({ slug }) => {
                   <FloatingWhatsApp
       phoneNumber="9191234XXXX"              // your WhatsApp number
          accountName="AdelSupport"              // displayed name
-         avatar=""                              // optional avatar URL
+         avatar=""                               // optional avatar URL
          statusMessage="Typically replies in a few minutes"
          chatMessage="Hi there! 👋 How can we help with this product?"
          allowClickAway={true}
@@ -381,9 +381,8 @@ const SingleProductDetail = ({ slug }) => {
            width: '56px',
            height: '56px',
           borderRadius: '50%',
-          
          }}
-                />
+       />
             </>
         )
     )

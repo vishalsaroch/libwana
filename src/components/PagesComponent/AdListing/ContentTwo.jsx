@@ -44,6 +44,19 @@ const ContentTwo = ({ AdListingDetails, handleAdListingChange, handleDetailsSubm
                         <input placeholder={t('enterAdditionalLinks')} name='link' className={`${AdListingDetails.link !== '' ? 'bg' : ''}`} value={AdListingDetails.link} type='url' onChange={handleAdListingChange} />
                     </div>
                     <div className="col-12">
+  <label className='auth_label' htmlFor="deliveryAvailable">
+    <input
+      type="checkbox"
+      name="deliveryAvailable"
+      checked={AdListingDetails.deliveryAvailable}
+      onChange={handleAdListingChange}
+      style={{ marginRight: '8px' }}
+    />
+    Delivery Available
+  </label>
+</div>
+
+                    <div className="col-12">
                         <label htmlFor="slug" className='auth_pers_label' >
                             {t('slug')}
                             <span className='slugValid'> ({t('allowedSlug')})</span>
