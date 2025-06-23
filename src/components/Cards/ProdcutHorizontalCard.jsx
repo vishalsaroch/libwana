@@ -12,7 +12,7 @@ import Swal from 'sweetalert2'
 import { useState } from 'react'
 
 
-const ProdcutHorizontalCard = ({ data, handleLike }) => {
+const ProdcutHorizontalCard = ({ data, handleLike,  selectedCompare, handleCompareToggle }) => {
 
     const userData = useSelector(userSignUpData)
     const systemSettingsData = useSelector((state) => state?.Settings)
@@ -96,10 +96,20 @@ const ProdcutHorizontalCard = ({ data, handleLike }) => {
                             {data?.city}{data?.city ? "," : null}{data?.state}{data?.state ? "," : null}{data?.country}
                         </p>
                     </div>
+                    
                     <div className="post_time">
                         <span className='time_ago'>{formatDate(data?.created_at)}</span>
                     </div>
                 </div>
+                <label className="compare-label">
+  <input
+    type="checkbox"
+    checked={selectedCompare.includes(product.id)}
+    onChange={() => handleCompareToggle(product)}
+  />
+  Compare
+</label>
+
             </div>
 
         </>
