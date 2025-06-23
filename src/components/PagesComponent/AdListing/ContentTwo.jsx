@@ -55,6 +55,26 @@ const ContentTwo = ({ AdListingDetails, handleAdListingChange, handleDetailsSubm
     Delivery Available
   </label>
 </div>
+<div className="col-12">
+  <label className="auth_label">Start Price (Auction)</label>
+  <input
+    type="number"
+    name="start_price"
+    value={AdListingDetails.start_price}
+    onChange={handleAdListingChange}
+    placeholder="Enter auction starting price"
+  />
+</div>
+
+<div className="col-12">
+  <label className="auth_label">Auction End Time</label>
+  <input
+    type="datetime-local"
+    name="end_time"
+    value={AdListingDetails.end_time}
+    onChange={handleAdListingChange}
+  />
+</div>
 
                     <div className="col-12">
                         <label htmlFor="slug" className='auth_pers_label' >

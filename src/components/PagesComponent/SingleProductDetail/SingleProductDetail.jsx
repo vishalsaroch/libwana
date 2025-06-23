@@ -345,7 +345,7 @@ const SingleProductDetail = ({ slug }) => {
                                             <ProductDescription productData={productData} t={t} />
                                         </div>
                                         <div className="col-md-12 col-lg-4">
-                                            <ProductDetailCard productData={productData} setProductData={setProductData} systemSettingsData={systemSettingsData} />
+                                            <ProductDetailCard productData={productData}  setProductData={setProductData} systemSettingsData={systemSettingsData} />
                                             <SellerCardInProdDet productData={productData} systemSettingsData={systemSettingsData} />
                                             <LocationCardInProdDet productData={productData} />
                                             {

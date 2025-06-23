@@ -35,6 +35,8 @@ const AdListing = () => {
     phonenumber: '',
     link: '',
     deliveryAvailable: false, // ✅ NEW FIELD
+      start_price: '',        // ✅ NEW
+  end_time: '',           // ✅ NEW
   })
   const [extraDetails, setExtraDetails] = useState({})
   const [uploadedImages, setUploadedImages] = useState([]);
@@ -579,7 +581,9 @@ const handleAdListingChange = (e) => {
       show_only_to_premium: show_only_to_premium,
       country: countryName,
       state: stateName,
-      city: cityName
+      city: cityName,
+      start_price: AdListingDetails.start_price,
+end_time: AdListingDetails.end_time
     }
     try {
       setIsAdPlaced(true)

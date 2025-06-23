@@ -8,8 +8,39 @@ import toast from "react-hot-toast";
 import { FaHeart, FaRegCalendarCheck, FaRegHeart } from "react-icons/fa6";
 import { FiShare2 } from "react-icons/fi";
 import Swal from "sweetalert2";
+import { useState, useEffect } from 'react';
+
+
+
 
 const ProductDetailCard = ({ productData, setProductData, systemSettingsData }) => {
+
+ const [timeLeft, setTimeLeft] = useState('');
+const [bidAmount, setBidAmount] = useState('');
+
+    useEffect(() => {
+  const end = new Date(productData.end_time);
+  const interval = setInterval(() => {
+    const now = new Date();
+    const diff = end - now;
+    if (diff <= 0) {
+      setTimeLeft('Auction Ended');
+      clearInterval(interval);
+    } else {
+      const mins = Math.floor(diff / 60000);
+      const secs = Math.floor((diff % 60000) / 1000);
+      setTimeLeft(`${mins}m ${secs}s`);
+    }
+  }, 1000);
+  return () => clearInterval(interval);
+}, [productData?.end_time]);
+
+
+
+const handleBid = (e) => {
+  e.preventDefault();
+  console.log('Placing bid:', bidAmount);
+};
 
     const path = usePathname()
     const CompanyName = systemSettingsData?.data?.data?.company_name
@@ -97,8 +128,27 @@ const ProductDetailCard = ({ productData, setProductData, systemSettingsData }) 
         <strong>Delivery Available:</strong> {productData.delivery_available ? 'Yes' : 'No'}
       </div>
     )}
-      
+      {productData?.start_price && (
+  <div className="auction-box">
+    <h3>🔔 Auction Live</h3>
+    <p><strong>Start Price:</strong> ₹{productData.start_price}</p>
+    <p><strong>Ends In:</strong> {timeLeft}</p>
+
+    <form onSubmit={handleBid}>
+      <input
+        type="number"
+        placeholder="Enter your bid"
+        value={bidAmount}
+        onChange={(e) => setBidAmount(e.target.value)}
+        required
+      />
+      <button type="submit">Place Bid</button>
+    </form>
+  </div>
+)}
+
             </div>
+
         </div>
     )
 }
