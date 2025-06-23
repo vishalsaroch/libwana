@@ -53,6 +53,16 @@ const Products = () => {
     const [KmRange, setKmRange] = useState(0)
     const [IsShowKmRange, setIsShowKmRange] = useState(false)
     const [IsLoadMore, setIsLoadMore] = useState(false)
+    const [selectedCompare, setSelectedCompare] = useState([]);
+
+    const handleCompareToggle = (product) => {
+  setSelectedCompare((prev) =>
+    prev.includes(product.id)
+      ? prev.filter((id) => id !== product.id)
+      : [...prev, product.id]
+  );
+};
+
 
 
     const getProducts = async (page) => {
@@ -344,13 +354,25 @@ const Products = () => {
 
                                                             <div className="col-12" key={index}>
                                                                 <Link href={userData?.id == item?.user_id ? `/my-listing/${item?.slug}` : `/product-details/${item.slug}`} prefetch={false} target="_blank">
-                                                                    <ProdcutHorizontalCard data={item} handleLike={handleLike} />
+                                                                  <ProdcutHorizontalCard
+  data={item}
+  handleLike={handleLike}
+  selectedCompare={selectedCompare}
+  handleCompareToggle={handleCompareToggle}
+/>
+
                                                                 </Link>
                                                             </div>
                                                         ) : (
                                                             <div className="col-xxl-3 col-lg-4 col-6" key={index}>
                                                                 <Link href={userData?.id == item?.user_id ? `/my-listing/${item?.slug}` : `/product-details/${item.slug}`} prefetch={false} target="_blank">
-                                                                    <ProductCard data={item} handleLike={handleLike} />
+                                                                   <ProductCard
+  data={item}
+  handleLike={handleLike}
+  selectedCompare={selectedCompare}
+  handleCompareToggle={handleCompareToggle}
+/>
+
                                                                 </Link>
                                                             </div>
                                                         )
@@ -370,6 +392,28 @@ const Products = () => {
                                                 <button onClick={handleLoadMore}> {t('loadMore')} </button>
                                             </div>
                                     }
+                                            {selectedCompare.length >= 2 && (
+  <div className="compare-button-wrapper" style={{ marginTop: '1rem', textAlign: 'center' }}>
+    <Link
+      href={{
+        pathname: '/compare',
+        query: { products: selectedCompare.join(',') },
+      }}
+      className="compare-btn"
+      style={{
+        padding: '10px 20px',
+        backgroundColor: '#007bff',
+        color: 'white',
+        borderRadius: '5px',
+        display: 'inline-block',
+        textDecoration: 'none'
+      }}
+    >
+      Compare Now ({selectedCompare.length})
+    </Link>
+  </div>
+)}
+
                                 </div>
                             </div>
                         </div>
