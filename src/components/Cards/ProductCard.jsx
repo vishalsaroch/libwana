@@ -11,7 +11,7 @@ import { useSelector } from "react-redux";
 import Swal from "sweetalert2";
 
 
-const ProductCard = ({ data, handleLike,selectedCompare, handleCompareToggle  }) => {
+const ProductCard = ({ data, handleLike,selectedCompare = [], handleCompareToggle=()=>{}  }) => {
     const userData = useSelector(userSignUpData)
     const systemSettingsData = useSelector((state) => state?.Settings)
     const CurrencySymbol = systemSettingsData?.data?.data?.currency_symbol
@@ -95,8 +95,8 @@ const ProductCard = ({ data, handleLike,selectedCompare, handleCompareToggle  })
             <label className="compare-label">
   <input
     type="checkbox"
-    checked={selectedCompare.includes(product.id)}
-    onChange={() => handleCompareToggle(product)}
+    checked={selectedCompare.includes(data.id)}
+    onChange={() => handleCompareToggle(data)}
   />
   Compare
 </label>
