@@ -9,6 +9,7 @@ import { t } from '@/utils';
 import { useSelector } from 'react-redux';
 import { CurrentLanguageData } from '@/redux/reuducer/languageSlice';
 import { FaAngleDown } from 'react-icons/fa6';
+import Link from 'next/link';
 
 const { Panel } = Collapse;
 
@@ -194,12 +195,18 @@ const FilterCard = ({ slug, MinMaxPrice, setMinMaxPrice, setIsFetchSingleCatItem
                             </div>
                         </div>
                     </Panel>
-
+                    <Panel header={t("Bid")} key="7">
+                        <div className="filter-item my-bids-link">
+                            <Link href="/dashboard/my-bids" className="auth_pers_label" style={{ color: "#222", fontWeight: 600 }}>
+                                📈 {t('myBids') || "My Bids"}
+                            </Link>
+                        </div>
+                    </Panel>
                     {
                         CustomFields && CustomFields.length > 0 && CustomFields.some(field =>
                             field.type === 'checkbox' || field.type === 'radio' || field.type === 'dropdown'
                         ) &&
-                        < Panel header={t('extradetails')} key="6">
+                        <Panel header={t('extradetails')} key="6">
 
                             <div className='extra_Det_wrapper'>
                                 {
