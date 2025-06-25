@@ -7,6 +7,7 @@ import { FaAngleDown, FaAngleUp } from "react-icons/fa6";
 import { IoIosMore } from "react-icons/io";
 
 
+
 const HeaderCategories = ({ cateData, headerCatSelected, settings }) => {
 
     const containerRef = useRef(null);
@@ -222,6 +223,12 @@ const HeaderCategories = ({ cateData, headerCatSelected, settings }) => {
                                                     </div>
                                                 ))
                                             }
+                                                {/* Book Now link after “Other” */}
+ <Link href="/booking/haircut">
+   <div className="px-4 py-2 text-blue-600 hover:bg-gray-100">
+     Book Now
+   </div>
+ </Link> 
 
                                         </div>
                                     </div>
