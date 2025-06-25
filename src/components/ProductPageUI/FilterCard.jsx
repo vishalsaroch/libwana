@@ -226,6 +226,18 @@ const FilterCard = ({ slug, MinMaxPrice, setMinMaxPrice, setIsFetchSingleCatItem
         </Link>
     </div>
 </Panel>
+<Panel header="Go Live for seller" key="10">
+    <div
+        className="filter-item book-now-link"
+        style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: 40 }}
+    >
+        <Link href="/go-live">
+            <button className="auth_pers_label" style={{ fontWeight: 600, background: "#007bff", color: "#fff", border: "none", borderRadius: 4, padding: "8px 20px", cursor: "pointer" }}>
+                Go-live
+            </button>
+        </Link>
+    </div>
+</Panel>
                     {
                         CustomFields && CustomFields.length > 0 && CustomFields.some(field =>
                             field.type === 'checkbox' || field.type === 'radio' || field.type === 'dropdown'
