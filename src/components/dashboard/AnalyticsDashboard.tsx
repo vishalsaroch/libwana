@@ -70,6 +70,9 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend
 } from 'recharts';
+import { Card, Row, Col, Typography, Divider } from 'antd';
+
+const { Title } = Typography;
 
 interface ViewStat { listing: string; views: number }
 interface LeadStat { listing: string; leads: number }
@@ -95,11 +98,13 @@ export default function AnalyticsDashboard() {
   return (
     <div className="space-y-12">
       {/* Views Charts */}
-      <div>
-        <h2 className="text-xl font-semibold mb-2">Views per Listing</h2>
-        <div className="flex flex-wrap gap-8">
-          {/* Bar Chart */}
-          <div style={{ flex: 1, minWidth: 300 }}>
+      <Card
+        title={<Title level={4} style={{ margin: 0 }}>Views per Listing</Title>}
+        bordered={false}
+        style={{ marginBottom: 32, boxShadow: '0 2px 8px #f0f1f2' }}
+      >
+        <Row gutter={[32, 32]}>
+          <Col xs={24} md={12}>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={views}>
                 <XAxis dataKey="listing" />
@@ -108,9 +113,8 @@ export default function AnalyticsDashboard() {
                 <Bar dataKey="views" fill="#8884d8" />
               </BarChart>
             </ResponsiveContainer>
-          </div>
-          {/* Pie Chart */}
-          <div style={{ flex: 1, minWidth: 300 }}>
+          </Col>
+          <Col xs={24} md={12}>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
@@ -130,16 +134,18 @@ export default function AnalyticsDashboard() {
                 <Tooltip />
               </PieChart>
             </ResponsiveContainer>
-          </div>
-        </div>
-      </div>
+          </Col>
+        </Row>
+      </Card>
 
       {/* Leads Charts */}
-      <div>
-        <h2 className="text-xl font-semibold mb-2">Leads / Chats / Bookings per Listing</h2>
-        <div className="flex flex-wrap gap-8">
-          {/* Bar Chart */}
-          <div style={{ flex: 1, minWidth: 300 }}>
+      <Card
+        title={<Title level={4} style={{ margin: 0 }}>Leads / Chats / Bookings per Listing</Title>}
+        bordered={false}
+        style={{ boxShadow: '0 2px 8px #f0f1f2' }}
+      >
+        <Row gutter={[32, 32]}>
+          <Col xs={24} md={12}>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={leads}>
                 <XAxis dataKey="listing" />
@@ -148,9 +154,8 @@ export default function AnalyticsDashboard() {
                 <Bar dataKey="leads" fill="#82ca9d" />
               </BarChart>
             </ResponsiveContainer>
-          </div>
-          {/* Pie Chart */}
-          <div style={{ flex: 1, minWidth: 300 }}>
+          </Col>
+          <Col xs={24} md={12}>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
@@ -170,9 +175,9 @@ export default function AnalyticsDashboard() {
                 <Tooltip />
               </PieChart>
             </ResponsiveContainer>
-          </div>
-        </div>
-      </div>
+          </Col>
+        </Row>
+      </Card>
     </div>
   );
 }
