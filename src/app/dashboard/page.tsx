@@ -4,6 +4,7 @@
 'use client';
 import Link from 'next/link';
 import { FaChartBar, FaGavel, FaBook, FaHome ,  } from 'react-icons/fa';
+import { RiLiveLine } from 'react-icons/ri'; 
 import { Row, Col, Card } from 'antd';
 
 export default function Dashboard() {
@@ -62,7 +63,19 @@ export default function Dashboard() {
           </Link>
         </Col>
         <Col xs={24} sm={12} md={6}>
-          <Link href="/dashboard">
+          <Link href="/dashboard/live/streamid">
+            <Card
+              hoverable
+              style={{ textAlign: 'center', borderRadius: 16 }}
+              bodyStyle={{ padding: 24 }}
+            >
+              <RiLiveLine  size={48} style={{ color: 'red' }} />
+              <div style={{ marginTop: 12, fontWeight: 600 }}>Go Live</div>
+            </Card>
+          </Link>
+        </Col>
+        <Col xs={24} sm={12} md={6}>
+          <Link href="/">
             <Card
               hoverable
               style={{ textAlign: 'center', borderRadius: 16 }}
