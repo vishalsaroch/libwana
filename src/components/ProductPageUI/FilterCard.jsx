@@ -195,49 +195,9 @@ const FilterCard = ({ slug, MinMaxPrice, setMinMaxPrice, setIsFetchSingleCatItem
                             </div>
                         </div>
                     </Panel>
-                    <Panel header={t("Bid")} key="7">
-                        <div className="filter-item my-bids-link">
-                            <Link href="/dashboard/my-bids" className="auth_pers_label" style={{ color: "#222", fontWeight: 600 }}>
-                                📈 {t('myBids') || "My Bids"}
-                            </Link>
-                        </div>
-                    </Panel>
-                    <Panel header="Book Now" key="8">
-    <div
-        className="filter-item book-now-link"
-        style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: 40 }}
-    >
-        <Link href="/booking/haircut">
-            <button className="auth_pers_label" style={{ fontWeight: 600, background: "#007bff", color: "#fff", border: "none", borderRadius: 4, padding: "8px 20px", cursor: "pointer" }}>
-                Book Now
-            </button>
-        </Link>
-    </div>
-</Panel>
-<Panel header="Seller Analytics" key="9">
-    <div
-        className="filter-item book-now-link"
-        style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: 40 }}
-    >
-        <Link href="/dashboard/analytics">
-            <button className="auth_pers_label" style={{ fontWeight: 600, background: "#007bff", color: "#fff", border: "none", borderRadius: 4, padding: "8px 20px", cursor: "pointer" }}>
-                Seller Analytics
-            </button>
-        </Link>
-    </div>
-</Panel>
-<Panel header="Go Live for seller" key="10">
-    <div
-        className="filter-item book-now-link"
-        style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: 40 }}
-    >
-        <Link href="/go-live">
-            <button className="auth_pers_label" style={{ fontWeight: 600, background: "#007bff", color: "#fff", border: "none", borderRadius: 4, padding: "8px 20px", cursor: "pointer" }}>
-                Go-live
-            </button>
-        </Link>
-    </div>
-</Panel>
+        
+
+
                     {
                         CustomFields && CustomFields.length > 0 && CustomFields.some(field =>
                             field.type === 'checkbox' || field.type === 'radio' || field.type === 'dropdown'

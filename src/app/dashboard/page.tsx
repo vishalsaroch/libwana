@@ -4,7 +4,7 @@
 'use client';
 import Link from 'next/link';
 import { FaChartBar, FaGavel, FaBook, FaHome ,  } from 'react-icons/fa';
-import { RiLiveLine } from 'react-icons/ri'; 
+import { RiLiveLine, RiCalendarEventLine,RiMoneyDollarCircleLine  } from 'react-icons/ri'; 
 import { Row, Col, Card } from 'antd';
 
 export default function Dashboard() {
@@ -13,15 +13,16 @@ export default function Dashboard() {
       <h1 style={{ fontWeight: 700, fontSize: '2rem', marginBottom: '2rem' }}>
         Dashboard Section
       </h1>
+
       <Row gutter={[32, 32]} justify="center">
         <Col xs={24} sm={12} md={6}>
-          <Link href="/dashboard/analytics">
+          <Link href="/dashboard/wallet">
             <Card
               hoverable
               style={{ textAlign: 'center', borderRadius: 16 }}
               bodyStyle={{ padding: 24 }}
             >
-              <FaChartBar size={48} style={{ color: '#1890ff' }} />
+              <RiMoneyDollarCircleLine  size={48} style={{ color: '#1890ff' }} />
               <div style={{ marginTop: 12, fontWeight: 600 }}>Analytics Dashboard</div>
             </Card>
           </Link>
@@ -75,6 +76,18 @@ export default function Dashboard() {
           </Link>
         </Col>
         <Col xs={24} sm={12} md={6}>
+          <Link href="/dashboard/event-section">
+            <Card
+              hoverable
+              style={{ textAlign: 'center', borderRadius: 16 }}
+              bodyStyle={{ padding: 24 }}
+            >
+              <RiCalendarEventLine  size={48} style={{ color: 'green' }} />
+              <div style={{ marginTop: 12, fontWeight: 600 }}>My Event</div>
+            </Card>
+          </Link>
+        </Col>
+        <Col xs={24} sm={12} md={6}>
           <Link href="/">
             <Card
               hoverable
@@ -86,7 +99,9 @@ export default function Dashboard() {
             </Card>
           </Link>
         </Col>
+        
       </Row>
+      
     </div>
   );
 }
