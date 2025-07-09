@@ -29,6 +29,14 @@ import ReportAdCard from "./ReportAdCard";
 import OpenInAppDrawer from "./OpenInAppDrawer";
 import { useSearchParams } from "next/navigation";
 import { FloatingWhatsApp } from 'react-floating-whatsapp';
+import ServiceInteractionButtons from "@/components/ServiceInteraction/ServiceInteractionButtons";
+import InterestedUsers from "@/components/ServiceInteraction/InterestedUsers";
+import { saveOfferData } from "@/redux/reuducer/offerSlice";
+import { itemOfferApi } from "@/utils/api";
+import { userSignUpData } from "@/redux/reuducer/authSlice";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import toast from 'react-hot-toast';
 
 
 
@@ -36,8 +44,11 @@ const SingleProductDetail = ({ slug }) => {
 
     const swiperRef = useRef();
     const isRtl = useIsRtl();
+    const dispatch = useDispatch();
+    const router = useRouter();
     const systemSettingsData = useSelector((state) => state?.Settings)
     const CurrentLanguage = useSelector(CurrentLanguageData)
+    const loggedInUser = useSelector(userSignUpData)
     const [productData, setProductData] = useState({});
     const [isBeginning, setIsBeginning] = useState(null);
     const [isEnd, setIsEnd] = useState(null);
@@ -189,6 +200,59 @@ const SingleProductDetail = ({ slug }) => {
     const openLightbox = () => {
         setViewerIsOpen(true)
         setCurrentImage(displayedImageIndex)
+    }
+
+    // Handle chat with predefined message
+    const handleChatClick = async (predefinedMessage = null) => {
+        if (!productData?.is_already_offered) {
+            try {
+                const response = await itemOfferApi.offer({
+                    item_id: productData.id,
+                });
+                const { data } = response.data;
+                saveOfferData(data);
+            } catch (error) {
+                toast.error(t('unableToStartChat'));
+                console.log(error);
+                return;
+            }
+        } else {
+            const offer = productData.item_offers.find((item) => loggedInUser?.id === item?.buyer_id)
+            const offerAmount = offer?.amount
+            const offerId = offer?.id
+
+            const selectedChat = {
+                amount: offerAmount,
+                id: offerId,
+                item: {
+                    status: productData?.status,
+                    price: productData?.price,
+                    image: productData?.image,
+                    name: productData?.name,
+                    review: null,
+                },
+                user_blocked: false,
+                item_id: productData?.id,
+                seller: {
+                    profile: productData?.user?.profile,
+                    name: productData?.user?.name,
+                    id: productData?.user?.id,
+                },
+                tab: 'buying',
+                predefinedMessage
+            }
+            saveOfferData(selectedChat)
+        }
+        router.push('/chat');
+    }
+
+    // Handle contact provider
+    const handleContactClick = () => {
+        if (productData?.user?.show_personal_details === 1 && productData?.user?.mobile) {
+            window.open(`tel:${productData?.user?.mobile}`, '_self');
+        } else {
+            toast.error(t('contactDetailsNotAvailable'));
+        }
     }
 
     return (
@@ -344,8 +408,20 @@ const SingleProductDetail = ({ slug }) => {
                                             }
                                             <ProductDescription productData={productData} t={t} />
                                         </div>
-                                        <div className="col-md-12 col-lg-4">
+                                        <div  className="col-md-12 col-lg-4">
                                             <ProductDetailCard productData={productData}  setProductData={setProductData} systemSettingsData={systemSettingsData} />
+                                            <ServiceInteractionButtons 
+                                                productData={productData}
+                                                systemSettingsData={systemSettingsData}
+                                                onContactClick={handleContactClick}
+                                                onChatClick={handleChatClick}
+                                            />
+                                            {loggedInUser?.id === productData?.user_id && (
+                                                <InterestedUsers 
+                                                    productData={productData}
+                                                    systemSettingsData={systemSettingsData}
+                                                />
+                                            )}
                                             <SellerCardInProdDet productData={productData} systemSettingsData={systemSettingsData} />
                                             <LocationCardInProdDet productData={productData} />
                                             {

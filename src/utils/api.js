@@ -54,6 +54,9 @@ export const GET_VERIFICATION_STATUS = 'verification-request'
 export const MY_REVIEWS = 'my-review'
 export const RENEW_ITEM = 'renew-item'
 export const ADD_REPORT_REVIEW = 'add-review-report'
+export const TOGGLE_INTEREST = 'toggle-interest'
+export const CHECK_AVAILABILITY = 'check-availability'
+export const GET_INTERESTED_USERS = 'get-interested-users'
 
 
 
@@ -825,6 +828,40 @@ export const getParentCategoriesApi = {
                 child_category_id,
                 tree,
                 slug
+            }
+        })
+    },
+}
+
+// Service Interaction API
+export const serviceInteractionApi = {
+    toggleInterest: ({ item_id } = {}) => {
+        const formData = new FormData();
+        if (item_id) formData.append('item_id', item_id);
+        
+        return Api.post(TOGGLE_INTEREST, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+    },
+    
+    checkAvailability: ({ item_id } = {}) => {
+        const formData = new FormData();
+        if (item_id) formData.append('item_id', item_id);
+        
+        return Api.post(CHECK_AVAILABILITY, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+    },
+    
+    getInterestedUsers: ({ item_id, page } = {}) => {
+        return Api.get(GET_INTERESTED_USERS, {
+            params: {
+                item_id,
+                page
             }
         })
     },

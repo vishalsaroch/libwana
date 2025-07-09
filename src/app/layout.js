@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import Head from "next/head";
 import { Toaster } from "react-hot-toast";
 import 'react-loading-skeleton/dist/skeleton.css'
+import '../styles/ServiceInteraction.css'
 import Layout from "@/components/Layout/Layout";
 import axios from "axios";
 // import Script from "next/script";

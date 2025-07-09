@@ -127,6 +127,7 @@ const handleBid = (e) => {
       <div className="delivery_info">
         <strong>Delivery Available:</strong> {productData.delivery_available ? 'Yes' : 'No'}
       </div>
+      
     )}
       {productData?.start_price && (
   <div className="auction-box">

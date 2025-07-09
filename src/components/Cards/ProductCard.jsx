@@ -9,12 +9,19 @@ import toast from "react-hot-toast";
 import { userSignUpData } from '../../redux/reuducer/authSlice';
 import { useSelector } from "react-redux";
 import Swal from "sweetalert2";
+import ServiceInteractionButtons from "@/components/ServiceInteraction/ServiceInteractionButtons";
+import { useRouter } from "next/navigation";
+import { saveOfferData } from "@/redux/reuducer/offerSlice";
+import { itemOfferApi } from "@/utils/api";
+import { useDispatch } from "react-redux";
 
 
-const ProductCard = ({ data, handleLike,selectedCompare = [], handleCompareToggle=()=>{}  }) => {
+const ProductCard = ({ data, handleLike,selectedCompare = [], handleCompareToggle=()=>{} }) => {
     const userData = useSelector(userSignUpData)
     const systemSettingsData = useSelector((state) => state?.Settings)
     const CurrencySymbol = systemSettingsData?.data?.data?.currency_symbol
+    const router = useRouter()
+    const dispatch = useDispatch()
 
 
     const handleLikeItem = async (e) => {
@@ -48,6 +55,59 @@ const ProductCard = ({ data, handleLike,selectedCompare = [], handleCompareToggl
         } catch (error) {
             console.log(error)
             toast.success(t('failedToLike'))
+        }
+    }
+
+    // Handle chat with predefined message
+    const handleChatClick = async (predefinedMessage = null) => {
+        if (!data?.is_already_offered) {
+            try {
+                const response = await itemOfferApi.offer({
+                    item_id: data.id,
+                });
+                const { data: offerData } = response.data;
+                dispatch(saveOfferData(offerData));
+            } catch (error) {
+                toast.error(t('unableToStartChat'));
+                console.log(error);
+                return;
+            }
+        } else {
+            const offer = data.item_offers?.find((item) => userData?.id === item?.buyer_id)
+            const offerAmount = offer?.amount
+            const offerId = offer?.id
+
+            const selectedChat = {
+                amount: offerAmount,
+                id: offerId,
+                item: {
+                    status: data?.status,
+                    price: data?.price,
+                    image: data?.image,
+                    name: data?.name,
+                    review: null,
+                },
+                user_blocked: false,
+                item_id: data?.id,
+                seller: {
+                    profile: data?.user?.profile,
+                    name: data?.user?.name,
+                    id: data?.user?.id,
+                },
+                tab: 'buying',
+                predefinedMessage
+            }
+            dispatch(saveOfferData(selectedChat))
+        }
+        router.push('/chat');
+    }
+
+    // Handle contact provider
+    const handleContactClick = () => {
+        if (data?.user?.show_personal_details === 1 && data?.user?.mobile) {
+            window.open(`tel:${data?.user?.mobile}`, '_self');
+        } else {
+            toast.error(t('contactDetailsNotAvailable'));
         }
     }
 
@@ -92,14 +152,25 @@ const ProductCard = ({ data, handleLike,selectedCompare = [], handleCompareToggl
             <p className="product_card_prod_det">
                 {data?.city}{data?.city ? "," : null}{data?.state}{data?.state ? "," : null}{data?.country}
             </p>
+            
+            {/* Service Interaction Buttons */}
+            <div className="product_card_interactions">
+                <ServiceInteractionButtons 
+                    productData={data}
+                    systemSettingsData={systemSettingsData}
+                    onContactClick={handleContactClick}
+                    onChatClick={handleChatClick}
+                />
+            </div>
+            
             <label className="compare-label">
-  <input
-    type="checkbox"
-    checked={selectedCompare.includes(data.id)}
-    onChange={() => handleCompareToggle(data)}
-  />
-  Compare
-</label>
+                <input
+                    type="checkbox"
+                    checked={selectedCompare.includes(data.id)}
+                    onChange={() => handleCompareToggle(data)}
+                />
+                Compare
+            </label>
 
         </div>
     )
