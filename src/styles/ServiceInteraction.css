@@ -1,0 +1,601 @@
+/* Service Interaction Buttons Styles */
+.service_interaction_buttons {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.service_interaction_buttons .card-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 12px 16px;
+    border-radius: 8px 8px 0 0;
+    font-weight: 600;
+    color: #333;
+}
+
+.service_interaction_buttons .card-body {
+    padding: 16px;
+}
+
+.interaction_buttons_grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.interaction_btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #fff;
+    color: #333;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    text-decoration: none;
+}
+
+.interaction_btn:hover {
+    background: #f8f9fa;
+    border-color: #ccc;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.interaction_btn:active {
+    transform: translateY(0);
+}
+
+.interaction_btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Interested Button */
+.interaction_btn.interested {
+    background: #1877f2;
+    color: #fff;
+    border-color: #1877f2;
+}
+
+.interaction_btn.interested:hover {
+    background: #166fe5;
+    border-color: #166fe5;
+}
+
+.interaction_btn.interested svg {
+    color: #fff;
+}
+
+/* Availability Button */
+.interaction_btn.availability_btn {
+    background: #42b883;
+    color: #fff;
+    border-color: #42b883;
+}
+
+.interaction_btn.availability_btn:hover {
+    background: #369870;
+    border-color: #369870;
+}
+
+/* Contact Button */
+.interaction_btn.contact_btn {
+    background: #ff6b6b;
+    color: #fff;
+    border-color: #ff6b6b;
+}
+
+.interaction_btn.contact_btn:hover {
+    background: #ff5252;
+    border-color: #ff5252;
+}
+
+/* Chat Button */
+.interaction_btn.chat_btn {
+    background: #ffc107;
+    color: #333;
+    border-color: #ffc107;
+}
+
+.interaction_btn.chat_btn:hover {
+    background: #e0a800;
+    border-color: #e0a800;
+}
+
+/* Interest Count Badge */
+.interaction_count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #dc3545;
+    color: #fff;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+/* Facebook-style hover effects */
+.interaction_btn svg {
+    transition: all 0.3s ease;
+}
+
+.interaction_btn:hover svg {
+    transform: scale(1.1);
+}
+
+.interaction_btn.interested svg {
+    color: #1877f2;
+}
+
+.interaction_btn.interested.interested svg {
+    color: #fff;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .interaction_buttons_grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .interaction_btn {
+        padding: 10px 14px;
+        font-size: 13px;
+    }
+    
+    .interaction_btn svg {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .service_interaction_buttons .card-body {
+        padding: 12px;
+    }
+    
+    .interaction_btn {
+        padding: 8px 12px;
+        font-size: 12px;
+        gap: 6px;
+    }
+    
+    .interaction_btn svg {
+        width: 14px;
+        height: 14px;
+    }
+}
+
+/* Animation for button press effect */
+.interaction_btn:active {
+    animation: buttonPress 0.1s ease;
+}
+
+@keyframes buttonPress {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.95); }
+    100% { transform: scale(1); }
+}
+
+/* Loading state */
+.interaction_btn:disabled {
+    position: relative;
+    opacity: 0.7;
+}
+
+.interaction_btn:disabled::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ccc;
+    border-top: 2px solid #666;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    right: 8px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Facebook-style button ripple effect */
+.interaction_btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.interaction_btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease;
+}
+
+.interaction_btn:active::before {
+    width: 100%;
+    height: 100%;
+}
+
+/* Interested Users Component Styles */
+.interested_users_card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.interested_users_card .card-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 12px 16px;
+    border-radius: 8px 8px 0 0;
+    font-weight: 600;
+    color: #333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.view_all_btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.view_all_btn:hover {
+    background: #0056b3;
+}
+
+.interested_users_preview {
+    padding: 12px 0;
+}
+
+.interested_user_item {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.interested_user_item:last-child {
+    border-bottom: none;
+}
+
+.user_avatar {
+    border-radius: 50%;
+    margin-right: 12px;
+    object-fit: cover;
+}
+
+.user_info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.user_name {
+    font-weight: 500;
+    color: #333;
+    font-size: 14px;
+}
+
+.interested_time {
+    font-size: 12px;
+    color: #666;
+}
+
+.user_actions {
+    display: flex;
+    gap: 8px;
+}
+
+.contact_btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 6px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.contact_btn:hover {
+    background: #218838;
+}
+
+.more_users_indicator {
+    text-align: center;
+    font-size: 12px;
+    color: #666;
+    font-style: italic;
+    padding: 8px 0;
+}
+
+/* Modal Styles */
+.interested_users_modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal_overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+.modal_content {
+    background: white;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 500px;
+    max-height: 70vh;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.modal_header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f9fa;
+}
+
+.modal_header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.close_btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.3s ease;
+}
+
+.close_btn:hover {
+    background: #e9ecef;
+}
+
+.modal_body {
+    padding: 20px;
+    max-height: 50vh;
+    overflow-y: auto;
+}
+
+.interested_user_detail {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.interested_user_detail:last-child {
+    border-bottom: none;
+}
+
+.user_profile_link {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.3s ease;
+    padding: 8px;
+    border-radius: 6px;
+}
+
+.user_profile_link:hover {
+    background: #f8f9fa;
+}
+
+.user_avatar_large {
+    border-radius: 50%;
+    margin-right: 16px;
+    object-fit: cover;
+}
+
+.user_details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.user_details .user_name {
+    font-weight: 500;
+    color: #333;
+    font-size: 16px;
+}
+
+.user_email {
+    font-size: 14px;
+    color: #666;
+}
+
+.user_action_buttons {
+    display: flex;
+    gap: 8px;
+    margin-left: 12px;
+}
+
+.action_btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.action_btn:hover {
+    background: #0056b3;
+}
+
+.action_btn.email_btn {
+    background: #17a2b8;
+}
+
+.action_btn.email_btn:hover {
+    background: #138496;
+}
+
+.load_more_btn {
+    width: 100%;
+    background: #f8f9fa;
+    color: #333;
+    border: 1px solid #e0e0e0;
+    padding: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 16px;
+    transition: background 0.3s ease;
+}
+
+.load_more_btn:hover {
+    background: #e9ecef;
+}
+
+.load_more_btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Responsive Design for Modal */
+@media (max-width: 768px) {
+    .interested_users_modal {
+        padding: 10px;
+    }
+    
+    .modal_content {
+        max-height: 80vh;
+    }
+    
+    .modal_header {
+        padding: 12px 16px;
+    }
+    
+    .modal_body {
+        padding: 16px;
+    }
+    
+    .interested_user_detail {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+    }
+    
+    .user_action_buttons {
+        margin-left: 0;
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .service_interaction_buttons {
+        background: #2d3748;
+        border-color: #4a5568;
+    }
+    
+    .service_interaction_buttons .card-header {
+        background: #1a202c;
+        color: #e2e8f0;
+        border-color: #4a5568;
+    }
+    
+    .interaction_btn {
+        background: #4a5568;
+        color: #e2e8f0;
+        border-color: #718096;
+    }
+    
+    .interaction_btn:hover {
+        background: #2d3748;
+        border-color: #4a5568;
+    }
+    
+    .interested_users_card {
+        background: #2d3748;
+        border-color: #4a5568;
+    }
+    
+    .interested_users_card .card-header {
+        background: #1a202c;
+        color: #e2e8f0;
+        border-color: #4a5568;
+    }
+    
+    .modal_content {
+        background: #2d3748;
+        color: #e2e8f0;
+    }
+    
+    .modal_header {
+        background: #1a202c;
+        border-color: #4a5568;
+    }
+    
+    .user_profile_link:hover {
+        background: #4a5568;
+    }
+}
