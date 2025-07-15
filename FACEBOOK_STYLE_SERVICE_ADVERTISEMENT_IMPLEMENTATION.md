@@ -212,3 +212,31 @@ Add these translations to your language files:
 - Implement lazy loading for large lists
 
 This implementation provides a complete Facebook-style service advertisement interaction system that enhances user engagement and facilitates better communication between service providers and potential customers.
+
+
+
+
+
+
+
+
+
+
+<!-- refrral -->
+•  ReferralCodeGenerator: Better API response handling
+•  Wallet: Updated to show referral data properly
+•  Added proper error handling and loading states
+
+4. Test API (src/api/test-referral/route.js)
+•  Added for testing the referral system
+•  Can verify if the API is working correctly
+
+How to Test:
+
+1. Test the API directly: 
+•  Visit /api/test-referral?action=status to see current data
+•  Visit /api/test-referral?action=generate to test code generation
+2. Use the Wallet page: 
+•  Go to the wallet page
+•  Click on the "Generate Code" tab
+•  Click "Generate" button to create a referral code

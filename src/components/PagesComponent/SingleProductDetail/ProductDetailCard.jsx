@@ -10,7 +10,50 @@ import { FiShare2 } from "react-icons/fi";
 import Swal from "sweetalert2";
 import { useState, useEffect } from 'react';
 
+import MiniQRCode from "@/components/QRCode/MiniQRCode";
 
+    const handleChatClick = async (predefinedMessage = null) => {
+        if (!data?.is_already_offered) {
+            try {
+                const response = await itemOfferApi.offer({
+                    item_id: data.id,
+                });
+                const { data: offerData } = response.data;
+                dispatch(saveOfferData(offerData));
+            } catch (error) {
+                toast.error(t('unableToStartChat'));
+                console.log(error);
+                return;
+            }
+        } else {
+            const offer = data.item_offers?.find((item) => userData?.id === item?.buyer_id)
+            const offerAmount = offer?.amount
+            const offerId = offer?.id
+
+            const selectedChat = {
+                amount: offerAmount,
+                id: offerId,
+                item: {
+                    status: data?.status,
+                    price: data?.price,
+                    image: data?.image,
+                    name: data?.name,
+                    review: null,
+                },
+                user_blocked: false,
+                item_id: data?.id,
+                seller: {
+                    profile: data?.user?.profile,
+                    name: data?.user?.name,
+                    id: data?.user?.id,
+                },
+                tab: 'buying',
+                predefinedMessage
+            }
+            dispatch(saveOfferData(selectedChat))
+        }
+        router.push('/chat');
+    }
 
 
 const ProductDetailCard = ({ productData, setProductData, systemSettingsData }) => {
@@ -129,6 +172,20 @@ const handleBid = (e) => {
       </div>
       
     )}
+{productData?.user?.id && (
+  <div className="absolute top-2 left-6 z-10 flex flex-col items-center space-y-1 w-[80px]">
+    <span className="text-[11px] font-medium text-gray-700 text-center">
+      {productData?.user?.name || 'Scan Me '}
+    </span>
+    <MiniQRCode 
+      businessName={productData?.user?.name || 'Business'}
+      businessUrl={`${process.env.NEXT_PUBLIC_WEB_URL}/seller/${productData?.user?.id}`}
+      className="opacity-90 hover:opacity-100 scale-[1.3]" // Slightly bigger
+    />
+  </div>
+)}
+
+
       {productData?.start_price && (
   <div className="auction-box">
     <h3>🔔 Auction Live</h3>

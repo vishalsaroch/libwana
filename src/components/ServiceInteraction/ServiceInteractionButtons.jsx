@@ -221,15 +221,7 @@ const ServiceInteractionButtons = ({
                         )}
                     </button>
 
-                    {/* Is it available Button */}
-                    <button 
-                        className="interaction_btn availability_btn"
-                        onClick={handleAvailabilityCheck}
-                        disabled={isLoading}
-                    >
-                        <FaQuestionCircle size={18} />
-                        <span>{t('isItAvailable')}</span>
-                    </button>
+
 
                     {/* Contact Provider Button */}
                     <button 
@@ -237,19 +229,11 @@ const ServiceInteractionButtons = ({
                         onClick={handleContactProvider}
                         disabled={isLoading}
                     >
-                        <FaPhone size={18} />
+                        <FaPhone size={18}   />
                         <span>{t('contactProvider')}</span>
                     </button>
 
-                    {/* Start Chat Button */}
-                    <button 
-                        className="interaction_btn chat_btn"
-                        onClick={handleStartChat}
-                        disabled={isLoading}
-                    >
-                        <IoChatboxEllipsesOutline size={18} />
-                        <span>{t('startChat')}</span>
-                    </button>
+
                 </div>
             </div>
         </div>

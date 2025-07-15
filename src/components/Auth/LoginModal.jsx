@@ -16,6 +16,9 @@ import 'react-phone-input-2/lib/style.css';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import { usePathname, useRouter } from "next/navigation";
 import MailSentSucessfully from "./MailSentSucessfully";
+import useClientIP from "../../hooks/useClientIP";
+import VpnWarning from "../VpnWarning/VpnWarning";
+import { detectVPN, logVPNAttempt } from "../../utils/vpnDetector";
 
 
 const LoginModal = ({ IsLoginModalOpen, setIsRegisterModalOpen, setIsLoginModalOpen, IsMailSentOpen, setIsMailSentOpen, IsRegisterModalOpen, openSentMailModal }) => {
@@ -46,6 +49,9 @@ const LoginModal = ({ IsLoginModalOpen, setIsRegisterModalOpen, setIsLoginModalO
     const [resendOtpLoader, setResendOtpLoader] = useState(false)
     const [IsPasswordVisible, setIsPasswordVisible] = useState(false)
     const [username, setUsername] = useState('')
+    const [referralCode, setReferralCode] = useState('')
+    const { clientIP, loading: ipLoading, isVpn, vpnBlocked } = useClientIP()
+    const [showVpnWarning, setShowVpnWarning] = useState(false)
 
     const OnHide = async () => {
         setIsLoginModalOpen(false);
@@ -56,6 +62,7 @@ const LoginModal = ({ IsLoginModalOpen, setIsRegisterModalOpen, setIsLoginModalO
         setPassword("");
         setInputValue("");
         setUsername('')
+        setReferralCode('')
         setInputType("");
         setNumber("");
         setOtp("");
@@ -81,6 +88,44 @@ const LoginModal = ({ IsLoginModalOpen, setIsRegisterModalOpen, setIsLoginModalO
         }
     }, [isDemoMode, IsLoginModalOpen]);
 
+    // Show VPN warning when VPN is detected
+    useEffect(() => {
+        if (!ipLoading && (isVpn || vpnBlocked)) {
+            setShowVpnWarning(true);
+        }
+    }, [ipLoading, isVpn, vpnBlocked]);
+
+    // VPN Detection Check
+    const checkVpnAndProceed = async (callback) => {
+        if (ipLoading) {
+            toast.error(t('checkingConnection'));
+            return;
+        }
+
+        try {
+            // Use comprehensive VPN detection
+            const detectionResult = await detectVPN(clientIP);
+            
+            if (detectionResult.isVPN) {
+                // Log the VPN attempt
+                logVPNAttempt(detectionResult, navigator.userAgent);
+                setShowVpnWarning(true);
+                toast.error(t('vpnDetectedError'));
+                console.log('VPN detected:', detectionResult);
+                return;
+            }
+            
+            console.log('VPN check passed:', detectionResult);
+            
+            // Proceed with login if not VPN
+            await callback();
+            
+        } catch (error) {
+            console.error('VPN detection failed:', error);
+            // For security, show warning even if detection fails
+            toast.error(t('vpnCheckFailed'));
+        }
+    };
 
     const signin = async (email, password) => {
         try {
@@ -118,97 +163,128 @@ const LoginModal = ({ IsLoginModalOpen, setIsRegisterModalOpen, setIsLoginModalO
     const Signin = async (e) => {
         e.preventDefault();
 
-        if (IsRegisterModalOpen) {
+        // Check VPN first before proceeding
+        await checkVpnAndProceed(async () => {
+            if (IsRegisterModalOpen) {
 
-            if (!email) {
-                toast.error(t("emailRequired"))
-                return
-            } else if (!/\S+@\S+\.\S+/.test(email)) {
-                toast.error(t("emailInvalid"))
-                return
-            }
-            if (username?.trim() === '') {
-                toast.error(t("usernameRequired"))
-                return
-            }
-            if (!password) {
-                errors.password = t("passwordRequired");
-                toast.error(t("passwordRequired"))
-                return
-            } else if (password.length < 6) {
-                toast.error(t("passwordTooShort"))
-                return
-            }
-
-            try {
-                setShowLoader(true)
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;
-                await sendEmailVerification(user);
-                openSentMailModal();
-                try {
-                    const response = await userSignUpApi.userSignup({
-                        name: username ? username : "",
-                        email: email ? email : "",
-                        firebase_id: user?.uid,
-                        type: "email",
-                        registration: true
-                    });
-                    OnHide()
-                } catch (error) {
-                    console.log("error", error);
+                if (!email) {
+                    toast.error(t("emailRequired"))
+                    return
+                } else if (!/\S+@\S+\.\S+/.test(email)) {
+                    toast.error(t("emailInvalid"))
+                    return
                 }
-            } catch (error) {
-                const errorCode = error.code;
-                handleFirebaseAuthError(errorCode);
-            } finally {
-                setShowLoader(false)
-            }
-        } else {
-            try {
-                setShowLoader(true)
-                const userCredential = await signin(email, password);
-                const user = userCredential.user;
-                if (user.emailVerified) {
+                if (username?.trim() === '') {
+                    toast.error(t("usernameRequired"))
+                    return
+                }
+                if (!password) {
+                    toast.error(t("passwordRequired"))
+                    return
+                } else if (password.length < 6) {
+                    toast.error(t("passwordTooShort"))
+                    return
+                }
+
+                try {
+                    setShowLoader(true)
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    const user = userCredential.user;
+                    await sendEmailVerification(user);
+                    openSentMailModal();
                     try {
                         const response = await userSignUpApi.userSignup({
-                            name: user?.displayName ? user?.displayName : "",
-                            email: user?.email,
+                            name: username ? username : "",
+                            email: email ? email : "",
                             firebase_id: user?.uid,
-                            fcm_id: fetchFCM ? fetchFCM : "",
-                            type: "email"
+                            type: "email",
+                            registration: true,
+                            referral_code: referralCode ? referralCode : ""
                         });
-
-                        const data = response.data;
-                        loadUpdateData(data)
-                        if (data.error === true) {
-                            toast.error(data.message);
-                        }
-                        else {
-                            toast.success(data.message);
-                        }
-                        OnHide()
-                        if (pathname !== '/home') {
-                            if (data?.data?.mobile === "" || data?.data?.mobile === null) {
-                                router.push('/profile/edit-profile')
+                        
+                        // Apply referral code if provided
+                        if (referralCode) {
+                            try {
+                                const referralResponse = await fetch('/api/referral', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({
+                                        user_id: user?.uid,
+                                        referral_code: referralCode,
+                                        username: username
+                                    })
+                                });
+                                
+                                const referralData = await referralResponse.json();
+                                if (!referralData.error) {
+                                    toast.success(referralData.message);
+                                } else {
+                                    toast.error(referralData.message);
+                                }
+                            } catch (error) {
+                                console.error('Referral code error:', error);
+                                toast.error('Failed to apply referral code');
                             }
                         }
+                        
+                        OnHide()
                     } catch (error) {
-                        console.error("Error:", error);
+                        console.log("error", error);
                     }
-                    // Add your logic here for verified users
-                } else {
-                    toast.error(t('verifyEmailFirst'));
-                    await sendEmailVerification(auth.currentUser);
+                } catch (error) {
+                    const errorCode = error.code;
+                    handleFirebaseAuthError(errorCode);
+                } finally {
+                    setShowLoader(false)
                 }
-            } catch (error) {
-                const errorCode = error.code;
-                console.log('Error code:', errorCode);
-                handleFirebaseAuthError(errorCode);
-            } finally {
-                setShowLoader(false)
+            } else {
+                try {
+                    setShowLoader(true)
+                    const userCredential = await signin(email, password);
+                    const user = userCredential.user;
+                    if (user.emailVerified) {
+                        try {
+                            const response = await userSignUpApi.userSignup({
+                                name: user?.displayName ? user?.displayName : "",
+                                email: user?.email,
+                                firebase_id: user?.uid,
+                                fcm_id: fetchFCM ? fetchFCM : "",
+                                type: "email"
+                            });
+
+                            const data = response.data;
+                            loadUpdateData(data)
+                            if (data.error === true) {
+                                toast.error(data.message);
+                            }
+                            else {
+                                toast.success(data.message);
+                            }
+                            OnHide()
+                            if (pathname !== '/home') {
+                                if (data?.data?.mobile === "" || data?.data?.mobile === null) {
+                                    router.push('/profile/edit-profile')
+                                }
+                            }
+                        } catch (error) {
+                            console.error("Error:", error);
+                        }
+                        // Add your logic here for verified users
+                    } else {
+                        toast.error(t('verifyEmailFirst'));
+                        await sendEmailVerification(auth.currentUser);
+                    }
+                } catch (error) {
+                    const errorCode = error.code;
+                    console.log('Error code:', errorCode);
+                    handleFirebaseAuthError(errorCode);
+                } finally {
+                    setShowLoader(false)
+                }
             }
-        }
+        });
     };
 
     const generateRecaptcha = () => {
@@ -258,30 +334,32 @@ const LoginModal = ({ IsLoginModalOpen, setIsRegisterModalOpen, setIsLoginModalO
 
 
     const sendOTP = async () => {
-        setShowLoader(true)
-        const PhoneNumber = `${countryCode}${formattedNumber}`;
-        try {
-            const appVerifier = generateRecaptcha();
-            const confirmation = await signInWithPhoneNumber(auth, PhoneNumber, appVerifier);
-            setConfirmationResult(confirmation);
-            toast.success(t("otpSentSuccess"));
-            if (isDemoMode) {
-                setOtp("123456")
+        // Check VPN first before sending OTP
+        await checkVpnAndProceed(async () => {
+            setShowLoader(true)
+            const PhoneNumber = `${countryCode}${formattedNumber}`;
+            try {
+                const appVerifier = generateRecaptcha();
+                const confirmation = await signInWithPhoneNumber(auth, PhoneNumber, appVerifier);
+                setConfirmationResult(confirmation);
+                toast.success(t("otpSentSuccess"));
+                if (isDemoMode) {
+                    setOtp("123456")
 
+                }
+                if (resendOtpLoader) {
+                    setResendOtpLoader(false)
+                }
+            } catch (error) {
+                const errorCode = error.code;
+                handleFirebaseAuthError(errorCode);
+                if (resendOtpLoader) {
+                    setResendOtpLoader(false)
+                }
+            } finally {
+                setShowLoader(false);
             }
-            if (resendOtpLoader) {
-                setResendOtpLoader(false)
-            }
-        } catch (error) {
-            const errorCode = error.code;
-            handleFirebaseAuthError(errorCode);
-            if (resendOtpLoader) {
-                setResendOtpLoader(false)
-            }
-        } finally {
-            setShowLoader(false);
-        }
-
+        });
     };
 
     const resendOtp = async (e) => {
@@ -320,8 +398,36 @@ const LoginModal = ({ IsLoginModalOpen, setIsRegisterModalOpen, setIsLoginModalO
                     firebase_id: user.uid, // Accessing UID directly from the user object
                     fcm_id: fetchFCM ? fetchFCM : "",
                     country_code: countryCode,
-                    type: "phone"
+                    type: "phone",
+                    referral_code: referralCode ? referralCode : ""
                 });
+                
+                // Apply referral code if provided
+                if (referralCode) {
+                    try {
+                        const referralResponse = await fetch('/api/referral', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                user_id: user.uid,
+                                referral_code: referralCode,
+                                username: formattedNumber
+                            })
+                        });
+                        
+                        const referralData = await referralResponse.json();
+                        if (!referralData.error) {
+                            toast.success(referralData.message);
+                        } else {
+                            toast.error(referralData.message);
+                        }
+                    } catch (error) {
+                        console.error('Referral code error:', error);
+                        toast.error('Failed to apply referral code');
+                    }
+                }
 
                 const data = response.data;
                 loadUpdateData(data)
@@ -406,40 +512,71 @@ const LoginModal = ({ IsLoginModalOpen, setIsRegisterModalOpen, setIsLoginModalO
     }
 
     const handleGoogleSignup = async () => {
-        const provider = new GoogleAuthProvider();
-        try {
-            const response = await signInWithPopup(auth, provider);
-            const user = response.user
+        // Check VPN first before Google signup
+        await checkVpnAndProceed(async () => {
+            const provider = new GoogleAuthProvider();
             try {
-                const response = await userSignUpApi.userSignup({
-                    name: user.displayName ? user.displayName : "",
-                    email: user?.email,
-                    firebase_id: user.uid, // Accessing UID directly from the user object
-                    fcm_id: fetchFCM ? fetchFCM : "",
-                    type: "google"
-                });
-
-                const data = response.data;
-                loadUpdateData(data)
-                if (data.error === true) {
-                    toast.error(data.message);
-                }
-                else {
-                    toast.success(data.message);
-                }
-                OnHide();
-                if (pathname !== "/home") {
-                    if (data?.data?.mobile === "" || data?.data?.mobile === "undefined" || data?.data?.mobile === null) {
-                        router.push('/profile/edit-profile')
+                const response = await signInWithPopup(auth, provider);
+                const user = response.user
+                try {
+                    const response = await userSignUpApi.userSignup({
+                        name: user.displayName ? user.displayName : "",
+                        email: user?.email,
+                        firebase_id: user.uid, // Accessing UID directly from the user object
+                        fcm_id: fetchFCM ? fetchFCM : "",
+                        type: "google",
+                        referral_code: referralCode ? referralCode : ""
+                    });
+                    
+                    // Apply referral code if provided
+                    if (referralCode) {
+                        try {
+                            const referralResponse = await fetch('/api/referral', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    user_id: user.uid,
+                                    referral_code: referralCode,
+                                    username: user.displayName || user.email
+                                })
+                            });
+                            
+                            const referralData = await referralResponse.json();
+                            if (!referralData.error) {
+                                toast.success(referralData.message);
+                            } else {
+                                toast.error(referralData.message);
+                            }
+                        } catch (error) {
+                            console.error('Referral code error:', error);
+                            toast.error('Failed to apply referral code');
+                        }
                     }
+
+                    const data = response.data;
+                    loadUpdateData(data)
+                    if (data.error === true) {
+                        toast.error(data.message);
+                    }
+                    else {
+                        toast.success(data.message);
+                    }
+                    OnHide();
+                    if (pathname !== "/home") {
+                        if (data?.data?.mobile === "" || data?.data?.mobile === "undefined" || data?.data?.mobile === null) {
+                            router.push('/profile/edit-profile')
+                        }
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
                 }
             } catch (error) {
-                console.error("Error:", error);
+                const errorCode = error.code;
+                handleFirebaseAuthError(errorCode);
             }
-        } catch (error) {
-            const errorCode = error.code;
-            handleFirebaseAuthError(errorCode);
-        }
+        });
     };
 
 
@@ -606,6 +743,22 @@ const LoginModal = ({ IsLoginModalOpen, setIsRegisterModalOpen, setIsLoginModalO
                                 </div>
 
                                 {
+                                    IsRegisterModalOpen &&
+                                    <div className="auth_in_cont">
+                                        <label htmlFor="referralCode" className="auth_label">{t('referralCode')} (Optional)</label>
+                                        <input 
+                                            type="text" 
+                                            placeholder="Enter referral code" 
+                                            className="auth_input" 
+                                            name="referralCode" 
+                                            onChange={(e) => setReferralCode(e.target.value)} 
+                                            value={referralCode}
+                                            maxLength="12"
+                                        />
+                                    </div>
+                                }
+
+                                {
                                     !(mobile_authentication === 0 && email_authentication === 0 && google_authentication === 1) &&
                                     <button type="submit" className="verf_email_add_btn">
                                         {showLoader ? (
@@ -676,6 +829,21 @@ const LoginModal = ({ IsLoginModalOpen, setIsRegisterModalOpen, setIsLoginModalO
                                 </div>
                             }
 
+                            {
+                                IsRegisterModalOpen &&
+                                <div className="auth_in_cont">
+                                    <label htmlFor="referralCode" className="auth_label">{t('referralCode')} (Optional)</label>
+                                    <input 
+                                        type="text" 
+                                        placeholder="Enter referral code" 
+                                        className="auth_input" 
+                                        name="referralCode" 
+                                        onChange={(e) => setReferralCode(e.target.value)} 
+                                        value={referralCode}
+                                        maxLength="12"
+                                    />
+                                </div>
+                            }
 
                             <div className="auth_in_cont">
                                 <label htmlFor="password" className="auth_label">
@@ -774,6 +942,12 @@ const LoginModal = ({ IsLoginModalOpen, setIsRegisterModalOpen, setIsLoginModalO
             </Modal>
             <div id="recaptcha-container"></div>
             <MailSentSucessfully IsMailSentOpen={IsMailSentOpen} OnHide={() => setIsMailSentOpen(false)} IsLoginModalOpen={() => setIsLoginModalOpen(true)} />
+            <VpnWarning 
+                isVisible={showVpnWarning}
+                onClose={() => setShowVpnWarning(false)}
+                clientIP={clientIP}
+                isVpn={isVpn}
+            />
         </>
     )
 }

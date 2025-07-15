@@ -3,8 +3,8 @@
 
 'use client';
 import Link from 'next/link';
-import { FaChartBar, FaGavel, FaBook, FaHome ,  } from 'react-icons/fa';
-import { RiLiveLine, RiCalendarEventLine,RiMoneyDollarCircleLine  } from 'react-icons/ri'; 
+import { FaChartBar, FaGavel, FaBook, FaHome , FaQrcode } from 'react-icons/fa';
+import { RiLiveLine, RiCalendarEventLine,RiMoneyDollarCircleLine, RiShareForwardLine,RiBuildingLine ,RiWallet3Line   } from 'react-icons/ri'; 
 import { Row, Col, Card } from 'antd';
 
 export default function Dashboard() {
@@ -99,6 +99,54 @@ export default function Dashboard() {
             </Card>
           </Link>
         </Col>
+<Col xs={24} sm={12} md={6}>
+  <Link href="dashboard/qr-code">
+    <Card
+      hoverable
+      style={{ textAlign: 'center', borderRadius: 16 }}
+      bodyStyle={{ padding: 24 }}
+    >
+      <FaQrcode size={48} style={{ color: '#52c41a' }} /> {/* QR Code Icon */}
+      <div style={{ marginTop: 12, fontWeight: 600 }}>Qr-Code</div>
+    </Card>
+  </Link>
+</Col>
+<Col xs={24} sm={12} md={6}>
+  <Link href="dashboard/wallet">
+    <Card
+      hoverable
+      style={{ textAlign: 'center', borderRadius: 16 }}
+      bodyStyle={{ padding: 24 }}
+    >
+      <RiShareForwardLine size={48} style={{ color: '#13e4d9ff' }} /> {/* QR Code Icon */}
+      <div style={{ marginTop: 12, fontWeight: 600 }}>Refrral</div>
+    </Card>
+  </Link>
+</Col>
+<Col xs={24} sm={12} md={6}>
+  <Link href="dashboard/wallet">
+    <Card
+      hoverable
+      style={{ textAlign: 'center', borderRadius: 16 }}
+      bodyStyle={{ padding: 24 }}
+    >
+      <RiWallet3Line  size={48} style={{ color: '#c4801aff' }} /> {/* QR Code Icon */}
+      <div style={{ marginTop: 12, fontWeight: 600 }}>Wallet</div>
+    </Card>
+  </Link>
+</Col>
+<Col xs={24} sm={12} md={6}>
+  <Link href="dashboard/busniess-to-business">
+    <Card
+      hoverable
+      style={{ textAlign: 'center', borderRadius: 16 }}
+      bodyStyle={{ padding: 24 }}
+    >
+      <RiBuildingLine  size={48} style={{ color: '#201ac4ff' }} /> {/* QR Code Icon */}
+      <div style={{ marginTop: 12, fontWeight: 600 }}>B-2-B</div>
+    </Card>
+  </Link>
+</Col>
         
       </Row>
       

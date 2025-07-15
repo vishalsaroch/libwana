@@ -1,5 +1,3 @@
-//src/components/wallet/Wallet.jsx
-
 'use client'
 
 import React, { useState, useEffect } from 'react';
@@ -13,19 +11,20 @@ import {
   Modal,
   Form,
   InputNumber,
+  Input,
   Select,
   Table,
   Alert,
   Divider,
   message,
   Grid,
+  Badge,
   Tabs,
   Statistic,
   Space,
   Tag,
-  Badge,
-  Input,
   Tooltip,
+  Copy,
 } from 'antd';
 import {
   DollarOutlined,
@@ -35,23 +34,23 @@ import {
   BankOutlined,
   MobileOutlined,
   GiftOutlined,
-  TeamOutlined,
-  CopyOutlined,
   ShareAltOutlined,
   UserAddOutlined,
+  CopyOutlined,
+  TeamOutlined,
   TrophyOutlined,
 } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import { userSignUpData } from '@/redux/reuducer/authSlice';
-import ReferralCodeGenerator from '../referral/ReferralCodeGenerator';
 
-const { Title, Text } = Typography;
+const { Title, Text, Paragraph } = Typography;
 const { Option } = Select;
 const { useBreakpoint } = Grid;
 const { TabPane } = Tabs;
 
-export default function Wallet() {
+export default function EnhancedWallet() {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isReferralModalVisible, setIsReferralModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [receipt] = useState('INV-100234');
   const [activeTab, setActiveTab] = useState('1');
@@ -97,28 +96,24 @@ export default function Wallet() {
     },
   ]);
 
-  const [totalBalance, setTotalBalance] = useState(0);
   const screens = useBreakpoint();
   const userData = useSelector(userSignUpData);
 
   useEffect(() => {
-    if (userData) {
-      loadWalletData();
-      loadReferralData();
-    }
+    // Load wallet and referral data
+    loadWalletData();
+    loadReferralData();
   }, [userData]);
 
   const loadWalletData = async () => {
     try {
-      // Load wallet data from API or localStorage
-      const savedBalance = localStorage.getItem(`wallet_balance_${userData?.firebase_id}`);
-      const savedReferralEarnings = localStorage.getItem(`referral_earnings_${userData?.firebase_id}`);
-      
+      // API call to get wallet data
+      // For demo, using mock data
       setWalletData({
-        balance: savedBalance ? parseFloat(savedBalance) : 0,
+        balance: 40,
         escrow_balance: 13,
-        referral_earnings: savedReferralEarnings ? parseFloat(savedReferralEarnings) : 0,
-        total_earned: savedReferralEarnings ? parseFloat(savedReferralEarnings) : 0,
+        referral_earnings: 40,
+        total_earned: 40,
         total_spent: 0,
       });
     } catch (error) {
@@ -128,43 +123,30 @@ export default function Wallet() {
 
   const loadReferralData = async () => {
     try {
-      // Load referral data from API
-      const response = await fetch(`/api/referral?user_id=${userData?.firebase_id}`);
-      const data = await response.json();
-      
-      if (!data.error) {
-        setReferralData({
-          referral_code: data.data.user_referral_code || '',
-          total_referrals: data.data.total_referrals || 0,
-          referrals: data.data.referrals || [],
-        });
-        
-        // Update wallet referral earnings
-        setWalletData(prev => ({
-          ...prev,
-          referral_earnings: data.data.wallet?.referral_earnings || 0
-        }));
-      } else {
-        // Set empty data if user not found
-        setReferralData({
-          referral_code: '',
-          total_referrals: 0,
-          referrals: [],
-        });
-      }
+      // API call to get referral data
+      // For demo, using mock data
+      setReferralData({
+        referral_code: 'USR12345ABC',
+        total_referrals: 1,
+        referrals: [
+          {
+            id: '1',
+            referred_user_name: 'John Doe',
+            created_at: '2025-01-14T07:00:00Z',
+            reward_amount: 40,
+            status: 'active',
+          },
+        ],
+      });
     } catch (error) {
       console.error('Error loading referral data:', error);
-      // Set empty data on error
-      setReferralData({
-        referral_code: '',
-        total_referrals: 0,
-        referrals: [],
-      });
     }
   };
 
   const showModal = () => setIsModalVisible(true);
   const handleCancel = () => setIsModalVisible(false);
+  const showReferralModal = () => setIsReferralModalVisible(true);
+  const handleReferralCancel = () => setIsReferralModalVisible(false);
 
   const handleProceed = () => {
     form.validateFields().then((values) => {
@@ -188,10 +170,6 @@ export default function Wallet() {
         balance: prev.balance + values.amount,
         total_earned: prev.total_earned + values.amount,
       }));
-      
-      // Save to localStorage
-      localStorage.setItem(`wallet_balance_${userData?.firebase_id}`, (walletData.balance + values.amount).toString());
-      
       setIsModalVisible(false);
       message.success('Funds added successfully!');
       form.resetFields();
@@ -199,19 +177,15 @@ export default function Wallet() {
   };
 
   const copyReferralCode = () => {
-    if (referralData.referral_code) {
-      navigator.clipboard.writeText(referralData.referral_code);
-      message.success('Referral code copied to clipboard!');
-    }
+    navigator.clipboard.writeText(referralData.referral_code);
+    message.success('Referral code copied to clipboard!');
   };
 
   const shareReferralCode = () => {
-    if (!referralData.referral_code) return;
-    
-    const shareText = `Join our platform using my referral code: ${referralData.referral_code} and get $40 bonus!`;
+    const shareText = `Join ${process.env.NEXT_PUBLIC_COMPANY_NAME || 'LibWana'} using my referral code: ${referralData.referral_code} and get $40 bonus!`;
     if (navigator.share) {
       navigator.share({
-        title: 'Join with my referral code',
+        title: 'Join LibWana',
         text: shareText,
         url: window.location.origin,
       });
@@ -288,7 +262,9 @@ export default function Wallet() {
   return (
     <Layout style={{ padding: '16px', background: '#f0f2f5', minHeight: '100vh' }}>
       <Card bordered={false} style={{ background: '#fff', marginBottom: 24 }}>
-        <Title level={screens.xs ? 4 : 3} style={{ marginBottom: 0 }}>💼 Wallet Dashboard</Title>
+        <Title level={screens.xs ? 4 : 3} style={{ marginBottom: 0 }}>
+          💼 Wallet Dashboard
+        </Title>
         <Text type="secondary">Manage your funds, transactions, and referrals with ease.</Text>
       </Card>
 
@@ -396,13 +372,13 @@ export default function Wallet() {
                 <Space direction="vertical" style={{ width: '100%' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <Input
-                      value={referralData.referral_code || 'No code generated'}
+                      value={referralData.referral_code}
                       readOnly
                       size="large"
                       style={{ fontWeight: 'bold', fontSize: '16px' }}
                     />
                     <Tooltip title="Copy referral code">
-                      <Button icon={<CopyOutlined />} onClick={copyReferralCode} disabled={!referralData.referral_code} />
+                      <Button icon={<CopyOutlined />} onClick={copyReferralCode} />
                     </Tooltip>
                   </div>
                   <Space>
@@ -410,15 +386,14 @@ export default function Wallet() {
                       type="primary"
                       icon={<ShareAltOutlined />}
                       onClick={shareReferralCode}
-                      disabled={!referralData.referral_code}
                     >
                       Share Code
                     </Button>
                     <Button
                       icon={<UserAddOutlined />}
-                      onClick={() => setActiveTab('3')}
+                      onClick={showReferralModal}
                     >
-                      Generate Code
+                      How it Works
                     </Button>
                   </Space>
                 </Space>
@@ -462,10 +437,6 @@ export default function Wallet() {
             />
           </Card>
         </TabPane>
-
-        <TabPane tab="⚙️ Generate Code" key="3">
-          <ReferralCodeGenerator />
-        </TabPane>
       </Tabs>
 
       {/* Add Funds Modal */}
@@ -508,11 +479,48 @@ export default function Wallet() {
           </Form.Item>
         </Form>
       </Modal>
+
+      {/* Referral Info Modal */}
+      <Modal
+        title={<span><GiftOutlined /> How Referrals Work</span>}
+        open={isReferralModalVisible}
+        onCancel={handleReferralCancel}
+        footer={[
+          <Button key="close" onClick={handleReferralCancel}>
+            Close
+          </Button>
+        ]}
+        width={screens.xs ? '90%' : 600}
+      >
+        <Space direction="vertical" style={{ width: '100%' }}>
+          <Card size="small" style={{ backgroundColor: '#f6ffed' }}>
+            <Title level={5}>💰 Earn $40 for Each Referral</Title>
+            <Paragraph>
+              When someone signs up using your referral code, both you and your friend get $40 added to your wallets instantly!
+            </Paragraph>
+          </Card>
+
+          <Card size="small" style={{ backgroundColor: '#f0f5ff' }}>
+            <Title level={5}>📋 How to Use</Title>
+            <ol>
+              <li>Share your referral code with friends</li>
+              <li>They enter your code during registration</li>
+              <li>$40 is added to both wallets immediately</li>
+              <li>Start earning and spending on the platform</li>
+            </ol>
+          </Card>
+
+          <Card size="small" style={{ backgroundColor: '#fff7e6' }}>
+            <Title level={5}>⚠️ Important Notes</Title>
+            <ul>
+              <li>Each user can only use one referral code</li>
+              <li>You cannot use your own referral code</li>
+              <li>Bonus funds are locked to platform use only</li>
+              <li>All transactions are tracked and monitored</li>
+            </ul>
+          </Card>
+        </Space>
+      </Modal>
     </Layout>
-       
   );
 }
-
-
-
-

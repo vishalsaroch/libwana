@@ -1,3 +1,4 @@
 {
-    "zencoder.enableRepoIndexing": false
+    "zencoder.enableRepoIndexing": false,
+    "liveServer.settings.port": 5501
 }

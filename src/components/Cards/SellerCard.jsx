@@ -12,6 +12,8 @@ import { CiLink } from "react-icons/ci"
 import toast from "react-hot-toast"
 import { useSelector } from "react-redux"
 import { settingsData } from "@/redux/reuducer/settingSlice"
+import BusinessQRCode from "@/components/QRCode/BusinessQRCode"
+
 
 
 

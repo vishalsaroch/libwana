@@ -4,7 +4,9 @@ import Image from 'next/image'
 import { IoIosAddCircleOutline, IoIosMore } from "react-icons/io";
 import { GiHamburgerMenu } from "react-icons/gi";
 import dynamic from 'next/dynamic';
-import { Drawer, Select, Spin } from 'antd'
+import { Drawer, Select, Spin, List } from 'antd'
+import debounce from 'lodash.debounce';
+import axios from 'axios';
 import { GrLocation } from "react-icons/gr";
 import { FaSearch } from 'react-icons/fa';
 import Link from 'next/link';
@@ -39,6 +41,10 @@ const LoginModal = dynamic(() => import('../Auth/LoginModal.jsx'), { ssr: false 
 const { Panel } = Collapse
 
 const Header = () => {
+const [suggestions, setSuggestions] = useState([]);
+const [isSuggestionLoading, setIsSuggestionLoading] = useState(false);
+const [showDropdown, setShowDropdown] = useState(false);
+const suggestionRef = useRef(null);
 
     const pathname = usePathname()
     const router = useRouter()
@@ -65,6 +71,21 @@ const Header = () => {
     const headerCatSelected = getSlug(pathname)
     const [loading, setLoading] = useState(false);
     const [isAdListingClicked, setIsAdListingClicked] = useState(false)
+
+const fetchSuggestionsFromAPI = debounce(async (query) => {
+  setIsSuggestionLoading(true);
+  try {
+    const res = await axios.get(`https://dummyjson.com/products/search?q=${query}`);
+    const items = res.data?.products?.map(p => p.title) || [];
+    setSuggestions(items);
+    setShowDropdown(true);
+  } catch (error) {
+    console.error("Suggestion API error:", error);
+    setSuggestions([]);
+  } finally {
+    setIsSuggestionLoading(false);
+  }
+}, 300);
 
 
     // this api call only in pop cate swiper 
@@ -269,9 +290,18 @@ const Header = () => {
         }
     }
 
-    const handleSearch = (e) => {
-        setSearchQuery(e.target.value)
-    }
+ const handleSearch = (e) => {
+  const val = e.target.value;
+  setSearchQuery(val);
+
+  if (val.length >= 2) {
+    fetchSuggestionsFromAPI(val);
+  } else {
+    setSuggestions([]);
+    setShowDropdown(false);
+  }
+};
+
 
     const handleSearchNav = (e) => {
         e.preventDefault()
@@ -395,13 +425,19 @@ const Header = () => {
                                     ))}
                                 </Select>
                             </div>
-                            <form className='search_cont' onSubmit={handleSearchNav}>
-                                <div className='srchIconinput_cont'>
-                                    <BiPlanet size={16} color='#595B6C' className='planet' />
-                                    <input type="text" placeholder={t('searchItem')} onChange={(e) => handleSearch(e)} value={searchQuery} />
-                                </div>
-                                <button type='submit'><FaSearch size={14} /><span className='srch'>{t('search')}</span></button>
-                            </form>
+<form className='search_cont' onSubmit={handleSearchNav}>
+  <div className='srchIconinput_cont'>
+    <BiPlanet size={16} color='#595B6C' className='planet' />
+    <input
+      type="text"
+      placeholder={t('searchItem')}
+      onChange={(e) => handleSearch(e)}
+      value={searchQuery}
+    />
+  </div>
+  <button type='submit'><FaSearch size={14} /><span className='srch'>{t('search')}</span></button>
+</form>
+
                         </div>
 
                         <span onClick={handleShow} id="hamburg">
@@ -448,13 +484,57 @@ const Header = () => {
                                 ))}
                             </Select>
                         </div>
-                        <form className='search_cont' onSubmit={handleSearchNav}>
-                            <div className='srchIconinput_cont'>
-                                <BiPlanet size={16} color='#595B6C' className='planet' />
-                                <input type="text" placeholder={t('searchItem')} onChange={(e) => handleSearch(e)} value={searchQuery} />
-                            </div>
-                            <button type='submit'><FaSearch size={14} /><span className='srch'>{t('search')}</span></button>
-                        </form>
+ <form className='search_cont' onSubmit={handleSearchNav}>
+  <div className='srchIconinput_cont' style={{ position: 'relative' }}>
+    <BiPlanet size={16} color='#595B6C' className='planet' />
+    <input
+      type="text"
+      placeholder={t('searchItem')}
+      onChange={handleSearch}
+      value={searchQuery}
+    />
+
+    {showDropdown && (
+      <div
+        ref={suggestionRef}
+        style={{
+          position: 'absolute',
+          top: '100%',
+          left: 0,
+          right: 0,
+          background: '#fff',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+          zIndex: 9999,
+          maxHeight: 200,
+          overflowY: 'auto',
+        }}
+      >
+        {isSuggestionLoading ? (
+          <div style={{ padding: 8, textAlign: 'center' }}><Spin /></div>
+        ) : (
+          <List
+            size="small"
+            dataSource={suggestions}
+            renderItem={(item) => (
+              <List.Item
+                key={item}
+                style={{ cursor: 'pointer' }}
+                onClick={() => {
+                  setSearchQuery(item);
+                  setShowDropdown(false);
+                }}
+              >
+                {item}
+              </List.Item>
+            )}
+          />
+        )}
+      </div>
+    )}
+  </div>
+  <button type='submit'><FaSearch size={14} /><span className='srch'>{t('search')}</span></button>
+</form>
+
                     </div>
 
                     {(cityData?.city || cityData?.state || cityData?.country) ? (

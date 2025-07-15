@@ -14,6 +14,9 @@ import { useRouter } from "next/navigation";
 import { saveOfferData } from "@/redux/reuducer/offerSlice";
 import { itemOfferApi } from "@/utils/api";
 import { useDispatch } from "react-redux";
+// import MiniQRCode from "@/components/QRCode/MiniQRCode";
+
+
 
 
 const ProductCard = ({ data, handleLike,selectedCompare = [], handleCompareToggle=()=>{} }) => {
