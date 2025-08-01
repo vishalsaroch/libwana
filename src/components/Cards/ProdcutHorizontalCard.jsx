@@ -15,12 +15,14 @@ import { useRouter } from "next/navigation";
 import { saveOfferData } from "@/redux/reuducer/offerSlice";
 import { itemOfferApi } from "@/utils/api";
 import { useDispatch } from "react-redux";
+import { addToCompare, removeFromCompare, selectCompareList } from "@/redux/reuducer/compareSlice";
 
 
-const ProdcutHorizontalCard = ({ data, handleLike,  selectedCompare, handleCompareToggle }) => {
+const ProdcutHorizontalCard = ({ data, handleLike }) => {
 
     const userData = useSelector(userSignUpData)
     const systemSettingsData = useSelector((state) => state?.Settings)
+    const compareList = useSelector(selectCompareList)
     const CurrencySymbol = systemSettingsData?.data?.data?.currency_symbol
     const router = useRouter()
     const dispatch = useDispatch()
@@ -112,6 +114,16 @@ const ProdcutHorizontalCard = ({ data, handleLike,  selectedCompare, handleCompa
         }
     }
 
+    // Handle compare toggle
+    const handleCompareToggle = () => {
+        const isInCompare = compareList.some(item => item.id === data.id);
+        if (isInCompare) {
+            dispatch(removeFromCompare(data.id));
+        } else {
+            dispatch(addToCompare(data));
+        }
+    }
+
     return (
         <>
             <div className='product_horizontal_card card'>
@@ -172,13 +184,14 @@ const ProdcutHorizontalCard = ({ data, handleLike,  selectedCompare, handleCompa
                     </div>
                 </div>
                 
-                <label className="compare-label">
+                <label className="flex items-center gap-2 mt-3 cursor-pointer">
                     <input
                         type="checkbox"
-                        checked={selectedCompare.includes(data.id)}
-                        onChange={() => handleCompareToggle(data)}
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                        checked={compareList.some(item => item.id === data.id)}
+                        onChange={handleCompareToggle}
                     />
-                    Compare
+                    <span className="text-sm font-medium text-gray-700">{t('Compare')}</span>
                 </label>
 
             </div>

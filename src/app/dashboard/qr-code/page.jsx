@@ -1,4 +1,5 @@
-import QRCodeManager from "@/components/Dashboard/QRCodeManager";
+// import QRCodeManager from "@/components/Dashboard/QRCodeManager";
+import QRCodeManager from "../../../components/dashboard/QRCodeManager"
 
 export const metadata = {
     title: "QR Code Manager - Business Dashboard",

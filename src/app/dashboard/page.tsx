@@ -1,6 +1,4 @@
-// src/app/dashboard/page.tsx
-
-
+// src/app/dashboard/page.tsx  
 'use client';
 import Link from 'next/link';
 import { FaChartBar, FaGavel, FaBook, FaHome , FaQrcode } from 'react-icons/fa';
@@ -16,7 +14,7 @@ export default function Dashboard() {
 
       <Row gutter={[32, 32]} justify="center">
         <Col xs={24} sm={12} md={6}>
-          <Link href="/dashboard/wallet">
+          <Link href="/dashboard/analytics">
             <Card
               hoverable
               style={{ textAlign: 'center', borderRadius: 16 }}
