@@ -443,22 +443,24 @@ const SingleProductDetail = ({ slug }) => {
                 <CustomLightBox lightboxOpen={viewerIsOpen} currentImages={images} currentImageIndex={currentImage} handleCloseLightbox={() => setViewerIsOpen(false)} setCurrentImage={setCurrentImage} />
                 {isReportModal && <ReportModal IsReportModalOpen={isReportModal} OnHide={() => setIsReportModal(false)} itemID={productData?.id} setProductData={setProductData} />}
                 <OpenInAppDrawer IsOpenInApp={IsOpenInApp} OnHide={() => setIsOpenInApp(false)} systemSettingsData={systemSettingsData} />
+                {productData?.user?.show_personal_details === 1 && productData?.user?.mobile && (
                   <FloatingWhatsApp
-      phoneNumber="9191234XXXX"              // your WhatsApp number
-         accountName="connect With Seller"              // displayed name
-         avatar=""                               // optional avatar URL
-         statusMessage="Typically replies in a few minutes"
-         chatMessage="Hi there! 👋 How can we help with this product?"
-         allowClickAway={true}
-         notification
-         notificationSound
-         chatButtonStyle={{
-           backgroundColor: '#25D366',
-           width: '56px',
-           height: '56px',
-          borderRadius: '50%',
-         }}
-       />
+                    phoneNumber={productData.user.mobile}
+                    accountName="connect With Seller"
+                    avatar=""
+                    statusMessage="Typically replies in a few minutes"
+                    chatMessage="Hi there! 👋 How can we help with this product?"
+                    allowClickAway={true}
+                    notification
+                    notificationSound
+                    chatButtonStyle={{
+                      backgroundColor: '#25D366',
+                      width: '56px',
+                      height: '56px',
+                      borderRadius: '50%',
+                    }}
+                  />
+                )}
             </>
         )
     )

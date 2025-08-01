@@ -11,6 +11,7 @@ import locationReducer from '../reuducer/locationSlice';
 import offerReducer from '../reuducer/offerSlice';
 import searchReducer from "../reuducer/searchSlice"
 import globalStateReducer from '../reuducer/globalStateSlice';
+import compareReducer from '../reuducer/compareSlice';
 
 const persistConfig = {
   key: 'root',
@@ -29,7 +30,8 @@ const rootReducer = combineReducers({
   Location: locationReducer,
   OfferData: offerReducer,
   Search: searchReducer,
-  GlobalState: globalStateReducer
+  GlobalState: globalStateReducer,
+  compare: compareReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

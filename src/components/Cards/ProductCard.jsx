@@ -1,3 +1,5 @@
+//src/components/Cards/ProductCard.jsx
+
 'use client'
 import Image from "next/image"
 import { FaRegHeart } from "react-icons/fa";
@@ -14,14 +16,16 @@ import { useRouter } from "next/navigation";
 import { saveOfferData } from "@/redux/reuducer/offerSlice";
 import { itemOfferApi } from "@/utils/api";
 import { useDispatch } from "react-redux";
+import { addToCompare, removeFromCompare, selectCompareList } from "@/redux/reuducer/compareSlice";
 // import MiniQRCode from "@/components/QRCode/MiniQRCode";
 
 
 
 
-const ProductCard = ({ data, handleLike,selectedCompare = [], handleCompareToggle=()=>{} }) => {
+const ProductCard = ({ data, handleLike }) => {
     const userData = useSelector(userSignUpData)
     const systemSettingsData = useSelector((state) => state?.Settings)
+    const compareList = useSelector(selectCompareList)
     const CurrencySymbol = systemSettingsData?.data?.data?.currency_symbol
     const router = useRouter()
     const dispatch = useDispatch()
@@ -114,6 +118,24 @@ const ProductCard = ({ data, handleLike,selectedCompare = [], handleCompareToggl
         }
     }
 
+    // Handle compare toggle
+    const handleCompareToggle = () => {
+        const isInCompare = compareList.some(item => item.id === data.id);
+        if (isInCompare) {
+            dispatch(removeFromCompare(data.id));
+        } else {
+            dispatch(addToCompare(data));
+            // Check if after adding this item, we have 2 or more items
+            // We check for 1 because the state update is async, so current compareList.length + 1 = 2
+            if (compareList.length === 1) {
+                // Redirect to compare page after a small delay to allow state update
+                setTimeout(() => {
+                    router.push('/compare');
+                }, 100);
+            }
+        }
+    }
+
 
     return (
         <div className="product_card">
@@ -166,13 +188,14 @@ const ProductCard = ({ data, handleLike,selectedCompare = [], handleCompareToggl
                 />
             </div>
             
-            <label className="compare-label">
+            <label className="flex items-center gap-2 mt-3 cursor-pointer">
                 <input
                     type="checkbox"
-                    checked={selectedCompare.includes(data.id)}
-                    onChange={() => handleCompareToggle(data)}
+                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                    checked={compareList.some(item => item.id === data.id)}
+                    onChange={handleCompareToggle}
                 />
-                Compare
+                <span className="text-sm font-medium text-gray-700">{t('Compare')}</span>
             </label>
 
         </div>

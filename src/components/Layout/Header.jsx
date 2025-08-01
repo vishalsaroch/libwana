@@ -8,7 +8,7 @@ import { Drawer, Select, Spin, List } from 'antd'
 import debounce from 'lodash.debounce';
 import axios from 'axios';
 import { GrLocation } from "react-icons/gr";
-import { FaSearch } from 'react-icons/fa';
+import { FaSearch, FaUser } from 'react-icons/fa';
 import Link from 'next/link';
 import 'swiper/css';
 import { getSlug, isEmptyObject, placeholderImage, t, truncate } from '@/utils';
@@ -569,7 +569,19 @@ const fetchSuggestionsFromAPI = debounce(async (query) => {
                                 </div>
                             </>
                         ) : (
-                            <ProfileDropdown closeDrawer={closeDrawer} settings={settings} handleLogout={handleLogout} isDrawer={false} />
+                            <>
+                                <Link href="/dashboard" className="nav-item nav-link dashboard-btn" style={{ 
+                                    display: 'flex', 
+                                    alignItems: 'center', 
+                                    gap: '6px',
+                                    textDecoration: 'none',
+                                    color: 'inherit'
+                                }}>
+                                    <FaUser size={14} />
+                                    <span>{t('User Dashboard')}</span>
+                                </Link>
+                                <ProfileDropdown closeDrawer={closeDrawer} settings={settings} handleLogout={handleLogout} isDrawer={false} />
+                            </>
                         )}
 
                         {
@@ -622,7 +634,22 @@ const fetchSuggestionsFromAPI = debounce(async (query) => {
                                 </li>
                             </>
                         ) : (
-                            <ProfileDropdown closeDrawer={closeDrawer} settings={settings} handleLogout={handleLogout} isDrawer={true} />
+                            <>
+                                <li className='mobile_nav_tab'>
+                                    <Link href="/dashboard" onClick={closeDrawer} style={{ 
+                                        display: 'flex', 
+                                        alignItems: 'center', 
+                                        gap: '8px',
+                                        textDecoration: 'none',
+                                        color: 'inherit',
+                                        padding: '10px 0'
+                                    }}>
+                                        <FaUser size={16} />
+                                        <span>{t('User Dashboard')}</span>
+                                    </Link>
+                                </li>
+                                <ProfileDropdown closeDrawer={closeDrawer} settings={settings} handleLogout={handleLogout} isDrawer={true} />
+                            </>
                         )}
                     </li>
                     <li className='mobile_nav_tab'>
