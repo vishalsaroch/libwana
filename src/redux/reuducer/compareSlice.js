@@ -12,7 +12,14 @@ const compareSlice = createSlice({
     reducers: {
         addToCompare: (state, action) => {
             const product = action.payload
-            const exists = state.compareList.find(item => item.id === product.id)
+            
+            // Add null check for product and product.id
+            if (!product || !product.id) {
+                console.warn('Invalid product data provided to addToCompare');
+                return;
+            }
+            
+            const exists = state.compareList.find(item => item?.id === product.id)
             
             if (!exists && state.compareList.length < state.maxCompareItems) {
                 state.compareList.push(product)
@@ -20,7 +27,14 @@ const compareSlice = createSlice({
         },
         removeFromCompare: (state, action) => {
             const productId = action.payload
-            state.compareList = state.compareList.filter(item => item.id !== productId)
+            
+            // Add null check for productId
+            if (!productId) {
+                console.warn('Invalid product ID provided to removeFromCompare');
+                return;
+            }
+            
+            state.compareList = state.compareList.filter(item => item?.id !== productId)
         },
         clearCompareList: (state) => {
             state.compareList = []

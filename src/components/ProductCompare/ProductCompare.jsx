@@ -11,13 +11,17 @@ import { Row, Col, Space, Collapse, Button } from 'antd'
 import { DownOutlined } from '@ant-design/icons'
 
 
-const ProductCompare = ({ isOpen, onClose }) => {
+const ProductCompare = ({ isOpen, onClose, filteredProducts }) => {
     const dispatch = useDispatch()
     const compareList = useSelector(selectCompareList)
     const systemSettingsData = useSelector((state) => state?.Settings)
     const CurrencySymbol = systemSettingsData?.data?.data?.currency_symbol
 
     const handleRemoveProduct = (productId) => {
+        if (!productId) {
+            console.warn('Invalid product ID provided for removal');
+            return;
+        }
         dispatch(removeFromCompare(productId))
     }
 
@@ -155,8 +159,8 @@ const ProductCompare = ({ isOpen, onClose }) => {
     if (!isOpen) return null
 
     return (
-        <div className="compare-modal-overlay">
-            <div className="compare-modal">
+        <div className={`${filteredProducts ? 'compare-page-container' : 'compare-modal-overlay'}`}>
+            <div className={`${filteredProducts ? 'compare-page-content' : 'compare-modal'}`}>
                 <div className="compare-header">
                     <h2 className="compare-title">
                         <FaTag className="compare-icon" />
@@ -184,7 +188,7 @@ const ProductCompare = ({ isOpen, onClose }) => {
                             <p>{t('Select products from the listing to compare their features')}</p>
                         </div>
                     </div>
-                ) : compareList.length < 2 ? (
+                ) : filteredProducts.length < 2 ? (
                     <div className="compare-insufficient">
                         <div className="insufficient-state">
                             <FaTag size={48} className="insufficient-icon" />
@@ -208,8 +212,9 @@ const ProductCompare = ({ isOpen, onClose }) => {
             </Col>
 
             {/* Dynamic Columns for Products */}
-            {compareList.map((product) => (
-                <Col xs={24} sm={Math.floor(18 / compareList.length)} key={product.id}>
+          {compareList.filter(Boolean).map((product) => (
+  <Col xs={24} sm={Math.floor(18 / compareList.filter(Boolean).length)} key={product.id}>
+
                     <Space direction="vertical" size="middle" style={{ width: '100%' }}>
                         <div className="product-header" style={{ display: 'flex', justifyContent: 'flex-end' }}>
                             <Button
