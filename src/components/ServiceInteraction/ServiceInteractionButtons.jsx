@@ -202,41 +202,8 @@ const ServiceInteractionButtons = ({
     }
 
     return (
-        <div className="service_interaction_buttons card">
-            <div className="card-header">
-                <span>{t('serviceInteraction')}</span>
-            </div>
-            <div className="card-body">
-                <div className="interaction_buttons_grid">
-                    {/* Interested Button */}
-                    <button 
-                        className={`interaction_btn ${isInterested ? 'interested' : ''}`}
-                        onClick={handleInterested}
-                        disabled={isLoading}
-                    >
-                        <FaThumbsUp size={18} />
-                        <span>{t('interested')}</span>
-                        {interestCount > 0 && (
-                            <span className="interaction_count">{interestCount}</span>
-                        )}
-                    </button>
-
-
-
-                    {/* Contact Provider Button */}
-                    <button 
-                        className="interaction_btn contact_btn"
-                        onClick={handleContactProvider}
-                        disabled={isLoading}
-                    >
-                        <FaPhone size={18}   />
-                        <span>{t('contactProvider')}</span>
-                    </button>
-
-
-                </div>
-            </div>
-        </div>
+    <div>
+    </div>
     )
 }
 

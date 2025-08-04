@@ -226,7 +226,7 @@ const HeaderCategories = ({ cateData, headerCatSelected, settings }) => {
                                                 {/* Book Now link after “Other” */}
  <Link href="/booking/haircut">
    <div className="px-4 py-2 text-blue-600 hover:bg-gray-100">
-     Book Now
+     Add Service
    </div>
  </Link> 
 
