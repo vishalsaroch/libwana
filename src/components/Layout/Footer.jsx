@@ -67,7 +67,7 @@ const Footer = () => {
 
                 <div className="row" id="footer_deatils">
                     <div className="col-12 col-md-6 col-lg-4 right_border">
-                        <div id="footer_logo_section">
+                        <div id="footer__section">
                             <Link href={`${isLandingPage ? '/home' : '/'}`}>
                                 <Image
                                     loading="lazy"

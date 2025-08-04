@@ -195,7 +195,7 @@ const ProductCard = ({ data, handleLike }) => {
                     checked={compareList.some(item => item.id === data.id)}
                     onChange={handleCompareToggle}
                 />
-                <span className="text-sm font-medium text-gray-700">{t('Compare')}</span>
+                <span className="text-sm font-medium text-gray-700">Compare</span>
             </label>
 
         </div>
