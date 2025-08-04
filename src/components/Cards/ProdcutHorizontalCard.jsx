@@ -116,11 +116,30 @@ const ProdcutHorizontalCard = ({ data, handleLike }) => {
 
     // Handle compare toggle
     const handleCompareToggle = () => {
-        const isInCompare = compareList.some(item => item.id === data.id);
+        // Add null check for data
+        if (!data || !data.id) {
+            console.warn('Product data is missing or invalid');
+            return;
+        }
+        
+        const isInCompare = compareList.some(item => item?.id === data.id);
         if (isInCompare) {
             dispatch(removeFromCompare(data.id));
         } else {
+            // Check if we're already at max capacity
+            if (compareList.length >= 4) {
+                toast.error(t('You can compare up to 4 products at once'));
+                return;
+            }
             dispatch(addToCompare(data));
+            
+            // Redirect to compare page when 2 items are selected
+            // We check for 1 because the state update is async, so current compareList.length + 1 = 2
+            if (compareList.length === 1) {
+                setTimeout(() => {
+                    router.push('/compare');
+                }, 100);
+            }
         }
     }
 

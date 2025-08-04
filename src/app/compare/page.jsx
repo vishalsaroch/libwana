@@ -17,16 +17,18 @@ const ComparePage = () => {
   const searchParams = useSearchParams();
   const dispatch = useDispatch();
   const compareList = useSelector(selectCompareList);
-  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
 
   useEffect(() => {
     const productIds = searchParams.get('products');
-    if (productIds) {
+    if (productIds && compareList.length > 0) {
       const ids = productIds.split(',').map(id => parseInt(id, 10));
-      // Assuming you have a way to fetch product details by IDs
-      // For now, I'll filter the compareList
+      // Filter the compareList to only show products that were selected
       const selectedProducts = compareList.filter(product => ids.includes(product.id));
-      setProducts(selectedProducts);
+      setFilteredProducts(selectedProducts);
+    } else {
+      // If no URL parameters, show all items in compare list
+      setFilteredProducts(compareList);
     }
   }, [searchParams, compareList]);
 
@@ -36,7 +38,11 @@ const ComparePage = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <ProductCompare isOpen={true} onClose={handleClose} />
+      <ProductCompare 
+        isOpen={true} 
+        onClose={handleClose} 
+        filteredProducts={filteredProducts}
+      />
     </div>
   );
 };

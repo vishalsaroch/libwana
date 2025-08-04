@@ -120,15 +120,26 @@ const ProductCard = ({ data, handleLike }) => {
 
     // Handle compare toggle
     const handleCompareToggle = () => {
-        const isInCompare = compareList.some(item => item.id === data.id);
+        // Add null check for data
+        if (!data || !data.id) {
+            console.warn('Product data is missing or invalid');
+            return;
+        }
+        
+        const isInCompare = compareList.some(item => item?.id === data.id);
         if (isInCompare) {
             dispatch(removeFromCompare(data.id));
         } else {
+            // Check if we're already at max capacity
+            if (compareList.length >= 4) {
+                toast.error(t('You can compare up to 4 products at once'));
+                return;
+            }
             dispatch(addToCompare(data));
-            // Check if after adding this item, we have 2 or more items
+            
+            // Redirect to compare page when 2 items are selected
             // We check for 1 because the state update is async, so current compareList.length + 1 = 2
-            if (compareList.length === 1) {
-                // Redirect to compare page after a small delay to allow state update
+            if (compareList.length === 2) {
                 setTimeout(() => {
                     router.push('/compare');
                 }, 100);
@@ -192,7 +203,7 @@ const ProductCard = ({ data, handleLike }) => {
                 <input
                     type="checkbox"
                     className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                    checked={compareList.some(item => item.id === data.id)}
+                    checked={data?.id ? compareList.some(item => item?.id === data.id) : false}
                     onChange={handleCompareToggle}
                 />
                 <span className="text-sm font-medium text-gray-700">Compare</span>
