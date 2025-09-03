@@ -190,14 +190,7 @@ const ProductCard = ({ data, handleLike }) => {
             </p>
             
             {/* Service Interaction Buttons */}
-            <div className="product_card_interactions">
-                <ServiceInteractionButtons 
-                    productData={data}
-                    systemSettingsData={systemSettingsData}
-                    onContactClick={handleContactClick}
-                    onChatClick={handleChatClick}
-                />
-            </div>
+   
             
             <label className="flex items-center gap-2 mt-3 cursor-pointer">
                 <input
