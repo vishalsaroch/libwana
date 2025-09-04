@@ -1,7 +1,6 @@
 import { Providers } from "@/redux/store/providers";
 import "../../public/css/style.css";
 import "bootstrap/dist/css/bootstrap.css";
-import Head from "next/head";
 import { Toaster } from "react-hot-toast";
 import 'react-loading-skeleton/dist/skeleton.css'
 import '../styles/ServiceInteraction.css'
@@ -39,12 +38,12 @@ export default async function RootLayout({ children }) {
 
   return (
     <html lang="en" web-version={process.env.NEXT_PUBLIC_WEB_VERSION}>
-      <Head>
+      <head>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossOrigin="anonymous" />
         <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
         <script src="https://js.paystack.co/v1/inline.js"></script>
         <script async defer src={`https://maps.googleapis.com/maps/api/js?key=${placeApiKey}&libraries=places&loading=async`}></script>
-      </Head>
+      </head>
       <body>
         {/* <Script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-xxxxxxxxxxxx"
           crossOrigin="anonymous" strategy="afterInteractive" /> */}
