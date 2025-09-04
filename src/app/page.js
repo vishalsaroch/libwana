@@ -1,4 +1,5 @@
-import HomePage from '@/components/Home';
+import Products from '@/components/PagesComponent/Products/Products';
+import HomeHeaderOnly from '@/components/Home/HomeHeaderOnly';
 import axios from 'axios';
 
 
@@ -29,7 +30,8 @@ const index = () => {
   return (
     <>
       {/* <SEO /> */}
-      <HomePage />
+      <HomeHeaderOnly />
+      <Products breadcrumbRootPath="/" />
     </>
   )
 }

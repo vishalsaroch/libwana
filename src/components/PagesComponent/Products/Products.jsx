@@ -24,7 +24,7 @@ import { ViewCategory, setCategoryView } from "@/redux/reuducer/categorySlice"
 import { getCityData } from "@/redux/reuducer/locationSlice"
 
 
-const Products = () => {
+const Products = ({ breadcrumbRootPath = '/products' }) => {
 
     const { lat, long } = useSelector(getCityData)
     const dispatch = useDispatch()
@@ -144,8 +144,8 @@ const Products = () => {
     }, [search, sortBy, IsFetchSingleCatItem])
 
     useEffect(() => {
-        dispatch(setBreadcrumbPath([{ name: t('allCategories'), slug: '/products' }]))
-    }, [])
+        dispatch(setBreadcrumbPath([{ name: t('allCategories'), slug: breadcrumbRootPath }]))
+    }, [breadcrumbRootPath])
 
 
     const clearLocation = () => {
