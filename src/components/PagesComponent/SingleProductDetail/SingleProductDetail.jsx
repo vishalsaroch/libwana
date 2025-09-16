@@ -29,7 +29,7 @@ import ReportAdCard from "./ReportAdCard";
 import OpenInAppDrawer from "./OpenInAppDrawer";
 import { useSearchParams } from "next/navigation";
 import { FloatingWhatsApp } from 'react-floating-whatsapp';
-import ServiceInteractionButtons from "@/components/ServiceInteraction/ServiceInteractionButtons";
+// import ServiceInteractionButtons from "@/components/ServiceInteraction/ServiceInteractionButtons";
 import InterestedUsers from "@/components/ServiceInteraction/InterestedUsers";
 import { saveOfferData } from "@/redux/reuducer/offerSlice";
 import { itemOfferApi } from "@/utils/api";
@@ -410,12 +410,12 @@ const SingleProductDetail = ({ slug }) => {
                                         </div>
                                         <div  className="col-md-12 col-lg-4">
                                             <ProductDetailCard productData={productData}  setProductData={setProductData} systemSettingsData={systemSettingsData} />
-                                            <ServiceInteractionButtons 
+{/*                                             <ServiceInteractionButtons 
                                                 productData={productData}
                                                 systemSettingsData={systemSettingsData}
                                                 onContactClick={handleContactClick}
                                                 onChatClick={handleChatClick}
-                                            />
+                                            /> */}
                                             {loggedInUser?.id === productData?.user_id && (
                                                 <InterestedUsers 
                                                     productData={productData}
